@@ -1,6 +1,12 @@
 Microsoft SQL Server
 ====================
 
+Every stored procedure has at least one parameter **@Help** which may be used to display usage information.
+
+You may also find **@Pretend** parameter useful to check what SQL query will be used to produce results.
+
+Have fun.
+
 Show index column
 -----------------
 
@@ -163,6 +169,8 @@ ORDER BY
 
 File configuration
 ------------------
+
+[Installation script for x_FileConfiguration](../../sql/SqlServer/x_FileConfiguration.sql)
 
 Show database files configuration.
 
