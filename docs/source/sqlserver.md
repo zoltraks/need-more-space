@@ -23,8 +23,6 @@ EXEC x_OperationStatus ;
 | ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] | 
 | OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... | 
 
-[Installation script for x_OperationStatus](../../sql/SqlServer/x_OperationStatus.sql)
-
 
 Find duplicates
 ---------------
@@ -50,4 +48,3 @@ ORDER BY
     [column1] , [Other One] , [Col3]
 ```
 
-[Installation script for x_FindDuplicates](../../sql/SqlServer/x_FindDuplicates.sql)
