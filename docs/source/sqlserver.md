@@ -65,7 +65,6 @@ EXEC DBAtools.dbo.x_ShowIndexColumn ;
 | dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | signal_wait_time_ms | 0 | 0 | 0 |
 | dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | waiting_tasks_count | 0 | 0 | 0 |
 | dbo | BlitzFirst_WaitStats | PK__BlitzFir__3214EC271BFD2C07 | ID | 1 | 1 | 1 |
-| dbo | BlitzFirst_WaitStats_Categories | PK__BlitzFir__98C9ED571FCDBCEB | | WaitType | 1 | 1 | 1 |
 | dbo | CommandLog | PK_CommandLog | ID | 1 | 1 | 1 |
 
 Operation status
@@ -99,6 +98,20 @@ Find duplicates
 [Installation script for x_FindDuplicates](../../sql/SqlServer/x_FindDuplicates.sql)
 
 Find duplicates in table.
+
+```sql
+EXEC x_FindDuplicates @Help = 1 ;
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Table | NVARCHAR(515) | Table name |
+| @Columns | NVARCHAR(MAX) | Column list separated by comma, semicolon or whitespace (i.e. "col1, [Other One] , col2") |
+| @Expand | NVARCHAR(MAX) | Expand results by including additional columns for duplicated records |
+| @Where | NVARCHAR(MAX) | Optional filter for WHERE |
+| @Top | INT | Maximum count of rows |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
 
 ```sql
 EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'column1 , [Other One] , Col3' , @Pretend = 1 ;
