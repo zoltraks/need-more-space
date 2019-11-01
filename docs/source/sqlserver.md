@@ -184,24 +184,24 @@ EXEC x_FileConfiguration @Database = 'TempDB' , @Pretend = 1 ;
 
 SELECT
     [Name] = [name]
-	,
-	[Size (MB)] = CONVERT(INT , [size] / 128.0)
-	,
-	[Autogrowth] = CASE [max_size] WHEN 0 THEN 'OFF' WHEN -1 THEN 'UNLIMITED' ELSE 'LIMITED' END
-	,
-	[Growth (MB)] = CASE WHEN [is_percent_growth] = 0 THEN CONVERT(BIGINT , [growth] / 128.0) ELSE 0 END
-	,
-	[Growth (%)] = CASE WHEN [is_percent_growth] = 1 THEN CONVERT(INT , [growth]) ELSE 0 END
-	,
-	[State] = [state_desc]
-	,
-	[Limit (MB)] = CASE WHEN [max_size] <= 0 THEN [max_size] ELSE CONVERT(INT , [max_size] / 128.0 / 1024.0 ) END
-	,
-	[Number] = [file_id]
-	,
-	[Type] = CASE WHEN [type] = 0 THEN 'DATA' ELSE 'LOG' END
-	,
-	[File] = [physical_name]
+    ,
+    [Size (MB)] = CONVERT(INT , [size] / 128.0)
+    ,
+    [Autogrowth] = CASE [max_size] WHEN 0 THEN 'OFF' WHEN -1 THEN 'UNLIMITED' ELSE 'LIMITED' END
+    ,
+    [Growth (MB)] = CASE WHEN [is_percent_growth] = 0 THEN CONVERT(BIGINT , [growth] / 128.0) ELSE 0 END
+    ,
+    [Growth (%)] = CASE WHEN [is_percent_growth] = 1 THEN CONVERT(INT , [growth]) ELSE 0 END
+    ,
+    [State] = [state_desc]
+    ,
+    [Limit (MB)] = CASE WHEN [max_size] <= 0 THEN [max_size] ELSE CONVERT(INT , [max_size] / 128.0 / 1024.0 ) END
+    ,
+    [Number] = [file_id]
+    ,
+    [Type] = CASE WHEN [type] = 0 THEN 'DATA' ELSE 'LOG' END
+    ,
+    [File] = [physical_name]
 FROM
     [TempDB].sys.database_files
 ```

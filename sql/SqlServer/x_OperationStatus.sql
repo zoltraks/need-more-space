@@ -55,15 +55,15 @@ BEGIN
     ,
     [Reads] = R.reads , [Writes] = R.writes
     ,
-    [Time taken] = RIGHT(''00'' + CONVERT(VARCHAR , R.total_elapsed_time / 60000) , 2) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.total_elapsed_time / 1000 % 60)) , 2)
+    [Time taken] = CONVERT(VARCHAR , R.total_elapsed_time / 60000) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.total_elapsed_time / 1000 % 60)) , 2)
     ,
-    [CPU Time] = RIGHT(''00'' + CONVERT(VARCHAR , R.cpu_time / 60000) , 2) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.cpu_time / 1000 % 60)) , 2)
+    [CPU Time] = CONVERT(VARCHAR , R.cpu_time / 60000) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.cpu_time / 1000 % 60)) , 2)
     ,
-    [Time left] = RIGHT(''00'' + CONVERT(VARCHAR , R.estimated_completion_time / 60000) , 2) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.estimated_completion_time / 1000 % 60)) , 2)
+    [Time left] = CONVERT(VARCHAR , R.estimated_completion_time / 60000) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.estimated_completion_time / 1000 % 60)) , 2)
     ,
     [Session] = R.session_id
     ,
-    [Query text                                                                                                              ] = T.text
+    [Operation                                                                                                               ] = T.text
 FROM sys.dm_exec_requests R
 CROSS APPLY sys.dm_exec_sql_text(R.sql_handle) T
 WHERE R.session_id <> @@SPID
