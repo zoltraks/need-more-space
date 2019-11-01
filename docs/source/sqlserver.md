@@ -50,4 +50,32 @@ ORDER BY
     [column1] , [Other One] , [Col3]
 ```
 
+You may want to expand your results by showing each duplicate record for further analysis.
+
+```sql
+EXEC DBAtools.dbo.x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'year,day' , @Expand = 'id , stamp' , @Pretend = 1 ;
+```
+
+```
+WITH __X__ AS
+(
+    SELECT
+    [year] , [day]
+    FROM
+        MyDb.dbo.MyTable
+    GROUP BY
+        [year] , [day]
+    HAVING
+        COUNT(*) > 1
+)
+SELECT
+    __X__.* , __Y__.[id] , __Y__.[stamp]
+FROM
+    __X__
+LEFT JOIN
+    MyDb.dbo.MyTable __Y__ ON __X__.[year] = __Y__.[year] AND __X__.[day] = __Y__.[day]
+ORDER BY
+    __X__.[year] , __X__.[day] , __Y__.[id] , __Y__.[stamp]
+```
+
 [Installation script for x_FindDuplicates](../../sql/SqlServer/x_FindDuplicates.sql)
