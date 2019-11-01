@@ -117,7 +117,7 @@ EXEC x_FindDuplicates @Help = 1 ;
 EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'column1 , [Other One] , Col3' , @Pretend = 1 ;
 ```
 
-```
+```sql
 SELECT
     [column1] , [Other One] , [Col3]
     ,
@@ -138,7 +138,7 @@ You may want to expand your results by showing each duplicate record for further
 EXEC DBAtools.dbo.x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'year,day' , @Expand = 'id , stamp' , @Pretend = 1 ;
 ```
 
-```
+```sql
 WITH __X__ AS
 (
     SELECT
@@ -159,3 +159,70 @@ LEFT JOIN
 ORDER BY
     __X__.[year] , __X__.[day] , __Y__.[id] , __Y__.[stamp]
 ```
+
+
+File configuration
+------------------
+
+Show database files configuration.
+
+```sql
+EXEC x_FileConfiguration @Help = 1 ;
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Database | NVARCHAR(257) | Database name | 
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```sql
+EXEC x_FileConfiguration @Database = 'TempDB' , @Pretend = 1 ;
+```
+
+```sql
+
+SELECT
+    [Name] = [name]
+	,
+	[Size (MB)] = CONVERT(INT , [size] / 128.0)
+	,
+	[Autogrowth] = CASE [max_size] WHEN 0 THEN 'OFF' WHEN -1 THEN 'UNLIMITED' ELSE 'LIMITED' END
+	,
+	[Growth (MB)] = CASE WHEN [is_percent_growth] = 0 THEN CONVERT(BIGINT , [growth] / 128.0) ELSE 0 END
+	,
+	[Growth (%)] = CASE WHEN [is_percent_growth] = 1 THEN CONVERT(INT , [growth]) ELSE 0 END
+	,
+	[State] = [state_desc]
+	,
+	[Limit (MB)] = CASE WHEN [max_size] <= 0 THEN [max_size] ELSE CONVERT(INT , [max_size] / 128.0 / 1024.0 ) END
+	,
+	[Number] = [file_id]
+	,
+	[Type] = CASE WHEN [type] = 0 THEN 'DATA' ELSE 'LOG' END
+	,
+	[File] = [physical_name]
+FROM
+    [TempDB].sys.database_files
+```
+
+```sql
+EXEC x_FileConfiguration @Database = 'TempDB' ;
+```
+
+| Name | Size (MB) | Autogrowth | Growth (MB) | Growth (%) | State | Limit (MB) | Number | Type | File |
+| ---- | --------- | ---------- | ----------- | ---------- | ----- | ---------- | ------ | ---- | ---- |
+| tempdev | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 1 | DATA | F:\DATABASE\TempDB\tempdev.mdf |
+| templog | 50 | UNLIMITED | 10 | 0 | ONLINE | -1 | 2 | LOG | F:\DATABASE\TempDB\templog.ldf |
+| tempdev02 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 3 | DATA | F:\DATABASE\TempDB\tempdev02.mdf |
+| tempdev03 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 4 | DATA | F:\DATABASE\TempDB\tempdev03.mdf |
+| tempdev04 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 5 | DATA | F:\DATABASE\TempDB\tempdev04.mdf |
+| tempdev05 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 6 | DATA | F:\DATABASE\TempDB\tempdev05.mdf |
+| tempdev06 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 7 | DATA | F:\DATABASE\TempDB\tempdev06.mdf |
+| tempdev07 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 8 | DATA | F:\DATABASE\TempDB\tempdev07.mdf |
+| tempdev08 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 9 | DATA | F:\DATABASE\TempDB\tempdev08.mdf |
+| tempdev09 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 10 | DATA | F:\DATABASE\TempDB\tempdev09.mdf |
+| tempdev10 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 11 | DATA | F:\DATABASE\TempDB\tempdev10.mdf |
+| tempdev11 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 12 | DATA | F:\DATABASE\TempDB\tempdev11.mdf |
+| tempdev12 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 13 | DATA | F:\DATABASE\TempDB\tempdev12.mdf |
+| tempdev01 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 14 | DATA | F:\DATABASE\TempDB\tempdev01.mdf |

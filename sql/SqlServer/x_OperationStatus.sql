@@ -49,19 +49,20 @@ BEGIN
     ,
     [%] = CONVERT(DECIMAL(9, 2) , R.percent_complete)
     ,
-	[Wait type] = R.wait_type
+    [Wait type] = R.wait_type
     ,
-    [Start time] = R.start_time, 
+    [Start time] = R.start_time
+    ,
     [Reads] = R.reads , [Writes] = R.writes
-	,
+    ,
     [Time taken] = RIGHT(''00'' + CONVERT(VARCHAR , R.total_elapsed_time / 60000) , 2) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.total_elapsed_time / 1000 % 60)) , 2)
     ,
     [CPU Time] = RIGHT(''00'' + CONVERT(VARCHAR , R.cpu_time / 60000) , 2) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.cpu_time / 1000 % 60)) , 2)
-	,
+    ,
     [Time left] = RIGHT(''00'' + CONVERT(VARCHAR , R.estimated_completion_time / 60000) , 2) + '':'' + RIGHT(''00'' + CONVERT(VARCHAR , CONVERT(INT , R.estimated_completion_time / 1000 % 60)) , 2)
     ,
     [Session] = R.session_id
-	,
+    ,
     [Query text                                                                                                              ] = T.text
 FROM sys.dm_exec_requests R
 CROSS APPLY sys.dm_exec_sql_text(R.sql_handle) T
