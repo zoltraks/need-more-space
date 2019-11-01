@@ -62,8 +62,7 @@ BEGIN
     ,
     [Session] = R.session_id
 	,
-    [Query text                                                                      ] = T.text
-	   --,T.*,R.*
+    [Query text                                                                                                              ] = T.text
 FROM sys.dm_exec_requests R
 CROSS APPLY sys.dm_exec_sql_text(R.sql_handle) T
 WHERE R.session_id <> @@SPID
