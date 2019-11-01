@@ -1,8 +1,77 @@
 Microsoft SQL Server
 ====================
 
+Show index column
+-----------------
+
+[Installation script for x_ShowIndexColumn](../../sql/SqlServer/x_ShowIndexColumn.sql)
+
+Show index columns for tables in database.
+
+```sql
+EXEC DBAtools.dbo.x_ShowIndexColumn @Help = 1 ;
+```
+
+| Parameter | Type | Description |                                                            
+| --------- | ---- | ----------- |
+| @Database | NVARCHAR(128) | Database name |
+| @Schema | NVARCHAR(128) | Schema name |
+| @Table | NVARCHAR(128) | Table name |
+| @Clustered | BIT | Show only clustered or nonclustered indexes |
+| @Unique | BIT | Show only unique or nonunique indexes |
+| @Primary | BIT | Show only primary or nonprimary indexes |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```sql
+EXEC DBAtools.dbo.x_ShowIndexColumn @Pretend = 1 ;
+```
+
+```sql
+SELECT
+    [Schema] = s.name , [Table] = t.name , [Index] = i.name , [Column] = c.name
+    ,
+    [Clustered] = CASE WHEN i.index_id = 1 THEN 1 ELSE 0 END , [Unique] = i.is_unique , [Primary] = i.is_primary_key
+FROM
+    sys.tables t
+INNER JOIN 
+    sys.indexes i ON t.object_id = i.object_id
+INNER JOIN 
+    sys.index_columns ic ON i.index_id = ic.index_id AND i.object_id = ic.object_id
+INNER JOIN 
+    sys.columns c ON ic.column_id = c.column_id AND ic.object_id = c.object_id
+INNER JOIN
+    sys.schemas s ON t.schema_id = s.schema_id
+WHERE
+    i.name IS NOT NULL
+ORDER BY
+    s.name , t.name , i.name
+```
+
+```sql
+EXEC DBAtools.dbo.x_ShowIndexColumn ;
+```
+
+| Schema | Table | Index | Column | Clustered | Unique | Primary |
+| ------ | ----- | ----- | ------ | --------- | ------ | ------- |
+| dbo | BlitzCache | PK_EB450450-26B6-4AB4-AFF3-4D773F3C5C38 | ID | 1 | 1 | 1 |
+| dbo | BlitzFirst | PK__BlitzFir__3214EC270DAF0CB0 | ID | 1 | 1 | 1
+| dbo | BlitzFirst_FileStats | PK__BlitzFir__3214EC27117F9D94 | ID | 1 | 1 | 1 |
+| dbo | BlitzFirst_PerfmonStats | PK__BlitzFir__3214EC27164452B1 | ID | 1 | 1 | 1 |
+| dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | ServerName | 0 | 0 | 0 |
+| dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | wait_type | 0 | 0 | 0 |
+| dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | CheckDate | 0 | 0 | 0 |
+| dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | wait_time_ms | 0 | 0 | 0 |
+| dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | signal_wait_time_ms | 0 | 0 | 0 |
+| dbo | BlitzFirst_WaitStats | IX_ServerName_wait_type_CheckDate_Includes | waiting_tasks_count | 0 | 0 | 0 |
+| dbo | BlitzFirst_WaitStats | PK__BlitzFir__3214EC271BFD2C07 | ID | 1 | 1 | 1 |
+| dbo | BlitzFirst_WaitStats_Categories | PK__BlitzFir__98C9ED571FCDBCEB | | WaitType | 1 | 1 | 1 |
+| dbo | CommandLog | PK_CommandLog | ID | 1 | 1 | 1 |
+
 Operation status
 ----------------
+
+[Installation script for x_OperationStatus](../../sql/SqlServer/x_OperationStatus.sql)
 
 Show system operation status.
 
@@ -23,11 +92,11 @@ EXEC x_OperationStatus ;
 | ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] | 
 | OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... | 
 
-[Installation script for x_OperationStatus](../../sql/SqlServer/x_OperationStatus.sql)
-
 
 Find duplicates
 ---------------
+
+[Installation script for x_FindDuplicates](../../sql/SqlServer/x_FindDuplicates.sql)
 
 Find duplicates in table.
 
@@ -77,5 +146,3 @@ LEFT JOIN
 ORDER BY
     __X__.[year] , __X__.[day] , __Y__.[id] , __Y__.[stamp]
 ```
-
-[Installation script for x_FindDuplicates](../../sql/SqlServer/x_FindDuplicates.sql)
