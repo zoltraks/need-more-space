@@ -101,6 +101,20 @@ Find duplicates
 Find duplicates in table.
 
 ```sql
+EXEC x_FindDuplicates @Help = 1 ;
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Table | NVARCHAR(515) | Table name |
+| @Columns | NVARCHAR(MAX) | Column list separated by comma, semicolon or whitespace (i.e. "col1, [Other One] , col2") |
+| @Expand | NVARCHAR(MAX) | Expand results by including additional columns for duplicated records |
+| @Where | NVARCHAR(MAX) | Optional filter for WHERE |
+| @Top | INT | Maximum count of rows |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```sql
 EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'column1 , [Other One] , Col3' , @Pretend = 1 ;
 ```
 
