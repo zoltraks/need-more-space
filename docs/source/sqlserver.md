@@ -234,3 +234,20 @@ EXEC x_FileConfiguration @Database = 'TempDB' ;
 | tempdev11 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 12 | DATA | F:\DATABASE\TempDB\tempdev11.mdf |
 | tempdev12 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 13 | DATA | F:\DATABASE\TempDB\tempdev12.mdf |
 | tempdev01 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 14 | DATA | F:\DATABASE\TempDB\tempdev01.mdf |
+
+System memory
+-------------
+
+[Installation script for x_SystemMemory](../../sql/SqlServer/x_SystemMemory.sql)
+
+Show basic information about memory amount and state.
+
+This procedure has no relevant parameters.
+
+```sql
+EXEC x_SystemMemory ;
+```
+
+| Physical memory (MB) | Available memory (MB) | Total page file (MB) | Available page file (MB) | System cache (MB) | Memory used (MB) | Memory state |
+| -------------------- | --------------------- | -------------------- | ------------------------ | ----------------- | ---------------- | ------------ |
+| 65535 | 5795 | 131069 | 70972 | 1435 | 56484 | Available physical memory is high |
