@@ -1,4 +1,4 @@
-﻿IF OBJECT_ID ( 'dbo.x_FindDuplicates' ) IS NULL
+IF OBJECT_ID ( 'dbo.x_FindDuplicates' ) IS NULL
 EXECUTE (N'CREATE PROCEDURE dbo.x_FindDuplicates AS BEGIN RETURN 0; END')
 
 GO

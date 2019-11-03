@@ -1,9 +1,7 @@
 MySQL
 =====
 
-Because MySQL lacks support for optional parameters, most of them are not using any.
-
-Because of that you will not find useful **@Help** or **@Pretend** parameters, you need to check this documentation for descriptions.
+MySQL lacks support for optional parameters, so most of them are not using any. Look at this famous [Bug #15975](https://bugs.mysql.com/bug.php?id=15975). And because of that you will not find useful **@Help** or **@Pretend** parameters. You need to check this documentation for descriptions instead.
 
 Have fun.
 
