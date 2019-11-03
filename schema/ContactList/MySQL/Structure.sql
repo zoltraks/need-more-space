@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS `messenger_account`
 (
   `Id` INT NOT NULL AUTO_INCREMENT COMMENT 'Record key' ,
 
-  `ContactId` INT NOT NULL AUTO_INCREMENT COMMENT 'Record key' ,
-  `MessengerServiceId` INT NULL AUTO_INCREMENT COMMENT 'Service key' ,
+  `ContactId` INT NOT NULL COMMENT 'Record key' ,
+  `MessengerServiceId` INT NULL COMMENT 'Service key' ,
   `AccountName` VARCHAR(100) NULL COMMENT 'Account name' ,
   `CustomServiceName` VARCHAR(100) NULL COMMENT 'Custom messenger' ,
   `DisplayOrder` SMALLINT NOT NULL DEFAULT 0 COMMENT 'Account name' ,
