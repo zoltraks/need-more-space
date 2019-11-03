@@ -1,4 +1,4 @@
-IF OBJECT_ID ( 'dbo.x_ShowDefaultContraint' ) IS NULL
+﻿IF OBJECT_ID ( 'dbo.x_ShowDefaultContraint' ) IS NULL
 EXECUTE (N'CREATE PROCEDURE dbo.x_ShowDefaultContraint AS BEGIN RETURN 0; END')
 
 GO

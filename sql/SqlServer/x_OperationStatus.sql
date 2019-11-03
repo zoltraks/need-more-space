@@ -1,4 +1,4 @@
-IF OBJECT_ID ( 'dbo.x_OperationStatus' ) IS NULL
+﻿IF OBJECT_ID ( 'dbo.x_OperationStatus' ) IS NULL
 EXECUTE (N'CREATE PROCEDURE dbo.x_OperationStatus AS BEGIN RETURN 0; END')
 
 GO

@@ -1,4 +1,4 @@
-IF OBJECT_ID ( 'dbo.x_FileConfiguration' ) IS NULL
+﻿IF OBJECT_ID ( 'dbo.x_FileConfiguration' ) IS NULL
 EXECUTE (N'CREATE PROCEDURE dbo.x_FileConfiguration AS BEGIN RETURN 0; END')
 
 GO
