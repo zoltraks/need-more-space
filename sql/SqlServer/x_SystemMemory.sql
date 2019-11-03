@@ -40,7 +40,8 @@ BEGIN
 
     DECLARE @SQL NVARCHAR(2000) = '';
 
-    SET @SQL = @SQL + 'SELECT
+    SET @SQL = @SQL +
+'SELECT
     sys.dm_os_sys_memory.total_physical_memory_kb / 1024 AS [Physical memory (MB)]
     ,
     sys.dm_os_sys_memory.available_physical_memory_kb / 1024 AS [Available memory (MB)]

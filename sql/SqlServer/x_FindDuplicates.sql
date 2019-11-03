@@ -381,7 +381,7 @@ ORDER BY
     END
 
     IF @Pretend = 1
-		PRINT @SQL ;
+        PRINT @SQL ;
     ELSE
         EXECUTE sp_executesql @SQL ;
 
