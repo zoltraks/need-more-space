@@ -251,3 +251,34 @@ EXEC x_SystemMemory ;
 | Physical memory (MB) | Available memory (MB) | Total page file (MB) | Available page file (MB) | System cache (MB) | Memory used (MB) | Memory state |
 | -------------------- | --------------------- | -------------------- | ------------------------ | ----------------- | ---------------- | ------------ |
 | 65535 | 5795 | 131069 | 70972 | 1435 | 56484 | Available physical memory is high |
+
+Show default contraint
+----------------------
+
+[Installation script for x_ShowDefaultContraint](../../sql/SqlServer/x_ShowDefaultContraint.sql)
+
+Show default contraint.
+
+This procedure may be used to show default contraints for specific tables and columns.
+
+```sql
+EXEC dbo.x_ShowDefaultContraint @Help = 1 ;
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Database | NVARCHAR(128) | Database name |
+| @Schema | NVARCHAR(128) | Schema name |
+| @Table | NVARCHAR(128) | Table name |
+| @Column | NVARCHAR(128) | Column name |
+| @Constraint | NVARCHAR(128) | Constraint name |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```sql
+EXEC dbo.x_ShowDefaultContraint @Database='ContactList' , @Column = 'DisplayOrder' ;
+```
+
+| Schema | Table | Constraint | Column | Object | Create | Modify |
+| ------ | ----- | ---------- | ------ | ------ | ------ | ------ |
+| dbo | MessengerService | DF__Messenger__Displ__0519C6AF | DisplayOrder | 85575343 | 2019-11-03 14:29:17.890 | 2019-11-03 14:29:17.890 |
