@@ -9,4 +9,4 @@ This repository contains scripts for installation of selected utility functions.
 
 [Jump to **Microsoft SQL Server** tools](docs/source/sqlserver.md)
 
-[Jump to **MySQL** tools](docs/source/sqlserver.md)
+[Jump to **MySQL** tools](docs/source/mysql.md)
