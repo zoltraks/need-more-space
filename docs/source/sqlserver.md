@@ -7,6 +7,8 @@ You may also find **@Pretend** parameter useful to check what SQL query will be 
 
 Have fun.
 
+[Installation script for all functions](../../sql/SqlServer-All.sql)
+
 Show index column
 -----------------
 
