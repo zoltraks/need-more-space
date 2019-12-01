@@ -9,6 +9,15 @@ Have fun.
 
 [Installation script for all functions](../../sql/SqlServer-All.sql)
 
+It is recommended to create separate database catalog (i.e. **DBAtools**) for utility scripts.
+
+```sql
+CREATE DATABASE [DBAtools] ON PRIMARY 
+( NAME = N'DBAtools', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools.mdf' , SIZE = 2048KB , FILEGROWTH = 10240KB )
+LOG ON 
+( NAME = N'DBAtools_log', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools_log.ldf' , SIZE = 1024KB , FILEGROWTH = 10240KB )
+```
+
 Show index column
 -----------------
 
