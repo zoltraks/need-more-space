@@ -11,6 +11,18 @@ This repository contains scripts for installation of selected utility functions.
 
 [Jump to **MySQL** tools](docs/source/mysql.md)
 
+Build
+-----
+
+You may use script [merge.sh](script/merge.sh) to build all SQL files into **All** file.
+
+```
+MINGW64 /need-more-space/script (master)
+$ ./merge.sh
+```
+
+Works also with "Git Bash".
+
 Notes
 -----
 
