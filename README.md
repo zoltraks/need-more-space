@@ -11,6 +11,8 @@ This repository contains scripts for installation of selected utility functions.
 
 [Jump to **MySQL** tools](docs/source/mysql.md)
 
+[Google!](https://www.google.com/search?q=need+more+space&tbm=isch)
+
 Changes
 -------
 
