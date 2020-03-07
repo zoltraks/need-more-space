@@ -11,10 +11,17 @@ This repository contains scripts for installation of selected utility functions.
 
 [Jump to **MySQL** tools](docs/source/mysql.md)
 
+[Google!](https://www.google.com/search?q=need+more+space&tbm=isch)
+
+Changes
+-------
+
+[List of changes](CHANGES.md)
+
 Build
 -----
 
-You may use script [merge.sh](script/merge.sh) to build all SQL files into **All** file.
+You may use script [merge.sh](script/merge.sh) to build all SQL scripts into **All** files.
 
 ```
 MINGW64 /need-more-space/script (master)

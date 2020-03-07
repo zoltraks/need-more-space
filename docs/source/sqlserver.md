@@ -298,7 +298,7 @@ Copy table data
 
 [Installation script for x_CopyData](../../sql/SqlServer/x_CopyData.sql)
 
-This function will perform copying data from one table to another.
+This function will copy data from one table to another.
 
 Copying is made with simple query INSERT INTO ... SELECT FROM ... with full list of columns.
 
