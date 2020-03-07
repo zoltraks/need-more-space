@@ -25,7 +25,7 @@ What you get
 | [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
 | x_ShowIdentitySeed | Show identity seed value for tables in database. |
 | [x_ShowDefaultContraint](docs/source/sqlserver.md#show-default-constraint) | Show default contraints. |
-| x_FindDuplicates | Find duplicates in table. |
+| [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |
 | [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
 
 Changes
