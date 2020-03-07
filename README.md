@@ -13,6 +13,18 @@ This repository contains scripts for installation of selected utility functions.
 
 [Google!](https://www.google.com/search?q=need+more+space&tbm=isch)
 
+What you get
+------------
+
+| Procedure | Description |
+| --------- | ----------- |
+| Show index column | Show index columns for tables in database. |
+| Operation status | Show system operation status. |
+| Find duplicates | Find duplicates in table. |
+| File configuration | Show database files configuration. |
+| System memory | Show basic information about memory amount and state. |
+| Copy data | Copy data from one table to another. |
+
 Changes
 -------
 

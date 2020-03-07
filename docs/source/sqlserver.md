@@ -177,7 +177,6 @@ ORDER BY
     __X__.[year] , __X__.[day] , __Y__.[id] , __Y__.[stamp]
 ```
 
-
 File configuration
 ------------------
 
@@ -298,7 +297,7 @@ Copy data
 
 [Installation script for x_CopyData](../../sql/SqlServer/x_CopyData.sql)
 
-This function will copy data from one table to another.
+Copy data from one table to another.
 
 Copying is made with simple query INSERT INTO ... SELECT FROM ... with full list of columns.
 
