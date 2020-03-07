@@ -18,12 +18,15 @@ What you get
 
 | Procedure | Description |
 | --------- | ----------- |
-| Show index column | Show index columns for tables in database. |
-| Operation status | Show system operation status. |
-| Find duplicates | Find duplicates in table. |
-| File configuration | Show database files configuration. |
-| System memory | Show basic information about memory amount and state. |
-| Copy data | Copy data from one table to another. |
+| x_ShowIndex |  Show indexes in database. |
+| x_ShowIndexColumn | Show index columns for tables in database. |
+| x_OperationStatus | Show system operation status. |
+| x_FileConfiguration | Show database files configuration. |
+| x_SystemMemory | Show basic information about memory amount and state. |
+| x_ShowIdentitySeed | Show identity seed value for tables in database. |
+| x_ShowDefaultContraint | Show default contraints. |
+| x_FindDuplicates | Find duplicates in table. |
+| x_CopyData | Copy data from one table to another. |
 
 Changes
 -------
