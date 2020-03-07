@@ -19,14 +19,14 @@ What you get
 | Procedure | Description |
 | --------- | ----------- |
 | x_ShowIndex |  Show indexes in database. |
-| x_ShowIndexColumn | Show index columns for tables in database. |
-| x_OperationStatus | Show system operation status. |
-| x_FileConfiguration | Show database files configuration. |
-| x_SystemMemory | Show basic information about memory amount and state. |
+| [x_ShowIndexColumn](docs/source/sqlserver.md#show-index-column) | Show index columns for tables in database. |
+| [x_OperationStatus](docs/source/sqlserver.md#operation-status) | Show system operation status. |
+| [x_FileConfiguration](docs/source/sqlserver.md#file-configuration) | Show database files configuration. |
+| [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
 | x_ShowIdentitySeed | Show identity seed value for tables in database. |
-| x_ShowDefaultContraint | Show default contraints. |
+| [x_ShowDefaultContraint](docs/source/sqlserver.md#show-default-constraint) | Show default contraints. |
 | x_FindDuplicates | Find duplicates in table. |
-| x_CopyData | Copy data from one table to another. |
+| [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
 
 Changes
 -------
