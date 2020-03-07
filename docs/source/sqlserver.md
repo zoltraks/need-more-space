@@ -371,8 +371,6 @@ EXEC x_CopyData @Pretend = 1 , @Copy = 1 , @Create = 1 , @Drop = 1 , @Delete = 1
     , @DestinationServer='LinkedSrv' , @DestinationDatabase='Backup' ;
 ```
 
-However linked server needs to be configured for RPC if you want to use **@Create** or **@Drop** options.
-
 ``` 
 EXEC (N'
 IF OBJECT_ID(N''[Backup].[dbo].[Table1]'') IS NOT NULL
@@ -397,6 +395,15 @@ INSERT INTO [LinkedSrv].[Backup].[dbo].[Table1]
 SELECT
   [id] , [ancestor] , [line] , [description]
 FROM [MyDb].[dbo].[Table1]
+```
+
+However linked server needs to be configured for RPC if you want to use **@Create** or **@Drop** options.
+
+```sql
+EXEC master.dbo.sp_serveroption @server=N'LinkedSrv', @optname=N'rpc', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'LinkedSrv', @optname=N'rpc out', @optvalue=N'true'
+GO
 ```
 
 It might be handy to use **@Where** parameter to filter data.
