@@ -293,8 +293,8 @@ EXEC x_ShowDefaultContraint @Database='ContactList' , @Column='DisplayOrder' ;
 | ------ | ----- | ---------- | ------ | ------ | ------ | ------ |
 | dbo | MessengerService | DF__Messenger__Displ__0519C6AF | DisplayOrder | 85575343 | 2019-11-03 14:29:17.890 | 2019-11-03 14:29:17.890 |
 
-Copy table data
----------------
+Copy data
+---------
 
 [Installation script for x_CopyData](../../sql/SqlServer/x_CopyData.sql)
 
