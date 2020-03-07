@@ -11,11 +11,13 @@ Have fun.
 
 It is recommended to create separate database catalog (i.e. **DBAtools**) for utility scripts.
 
-```sql
+```
 CREATE DATABASE [DBAtools] ON PRIMARY 
-( NAME = N'DBAtools', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools.mdf' , SIZE = 2048KB , FILEGROWTH = 10240KB )
+( NAME = N'DBAtools', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools.mdf'
+, SIZE = 2048KB , FILEGROWTH = 10240KB )
 LOG ON 
-( NAME = N'DBAtools_log', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools_log.ldf' , SIZE = 1024KB , FILEGROWTH = 10240KB )
+( NAME = N'DBAtools_log', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools_log.ldf'
+, SIZE = 1024KB , FILEGROWTH = 10240KB )
 ```
 
 Show index column
@@ -25,8 +27,8 @@ Show index column
 
 Show index columns for tables in database.
 
-```sql
-EXEC x_ShowIndexColumn @Help=1 ;
+```
+EXEC x_ShowIndexColumn @Help = 1 ;
 ```
 
 | Parameter | Type | Description |                                                            
@@ -40,8 +42,8 @@ EXEC x_ShowIndexColumn @Help=1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```sql
-EXEC x_ShowIndexColumn @Pretend=1 ;
+```
+EXEC x_ShowIndexColumn @Pretend = 1 ;
 ```
 
 ```sql
@@ -65,7 +67,7 @@ ORDER BY
     s.name , t.name , i.name
 ```
 
-```sql
+```
 EXEC x_ShowIndexColumn ;
 ```
 
@@ -95,7 +97,7 @@ Simply display what database server is doing now.
 
 This procedure has no relevant parameters.
 
-```sql
+```
 EXEC x_OperationStatus ;
 ```
 
@@ -116,8 +118,8 @@ Find duplicates
 
 Find duplicates in table.
 
-```sql
-EXEC x_FindDuplicates @Help=1 ;
+```
+EXEC x_FindDuplicates @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
@@ -130,8 +132,8 @@ EXEC x_FindDuplicates @Help=1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```sql
-EXEC x_FindDuplicates @Table='MyDb.dbo.MyTable' , @Columns='column1 , [Other One] , Col3' , @Pretend=1 ;
+```
+EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'column1 , [Other One] , Col3' , @Pretend = 1 ;
 ```
 
 ```sql
@@ -151,8 +153,8 @@ ORDER BY
 
 You may want to expand your results by showing each duplicate record for further analysis.
 
-```sql
-EXEC DBAtools.dbo.x_FindDuplicates @Table='MyDb.dbo.MyTable' , @Columns='year,day' , @Expand='id , stamp' , @Pretend=1 ;
+```
+EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'year,day' , @Expand = 'id , stamp' , @Pretend = 1 ;
 ```
 
 ```sql
@@ -184,8 +186,8 @@ File configuration
 
 Show database files configuration.
 
-```sql
-EXEC x_FileConfiguration @Help=1 ;
+```
+EXEC x_FileConfiguration @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
@@ -194,8 +196,8 @@ EXEC x_FileConfiguration @Help=1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```sql
-EXEC x_FileConfiguration @Database='TempDB' , @Pretend=1 ;
+```
+EXEC x_FileConfiguration @Database = 'TempDB' , @Pretend = 1 ;
 ```
 
 ```sql
@@ -223,8 +225,8 @@ FROM
     [TempDB].sys.database_files
 ```
 
-```sql
-EXEC x_FileConfiguration @Database='TempDB' ;
+```
+EXEC x_FileConfiguration @Database = 'TempDB' ;
 ```
 
 | Name | Size (MB) | Autogrowth | Growth (MB) | Growth (%) | State | Limit (MB) | Number | Type | File |
@@ -253,7 +255,7 @@ Show basic information about memory amount and state.
 
 This procedure has no relevant parameters.
 
-```sql
+```
 EXEC x_SystemMemory ;
 ```
 
@@ -270,8 +272,8 @@ Show default contraint.
 
 This procedure may be used to show default contraints for specific tables and columns.
 
-```sql
-EXEC x_ShowDefaultContraint @Help=1 ;
+```
+EXEC x_ShowDefaultContraint @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
@@ -284,8 +286,8 @@ EXEC x_ShowDefaultContraint @Help=1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```sql
-EXEC x_ShowDefaultContraint @Database='ContactList' , @Column='DisplayOrder' ;
+```
+EXEC x_ShowDefaultContraint @Database = 'ContactList' , @Column = 'DisplayOrder' ;
 ```
 
 | Schema | Table | Constraint | Column | Object | Create | Modify |
@@ -305,8 +307,8 @@ This procedure may optionally create destination table, drop it first, or delete
 
 Will also work with linked servers.
 
-```sql
-EXEC x_CopyData @Help=1 ;
+```
+EXEC x_CopyData @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
@@ -332,8 +334,8 @@ EXEC x_CopyData @Help=1 ;
 
 Use pretend mode to see what will be done.
 
-```sql
-EXEC x_CopyData @Pretend=1 , @SourceDatabase='MyDb' , @SourceTable='Table1' , @DestinationDatabase='Backup' ;
+```
+EXEC x_CopyData @SourceDatabase = 'MyDb' , @SourceTable = 'Table1' , @DestinationDatabase = 'Backup' , @Pretend = 1 ;
 ```
 
 ```sql
@@ -347,8 +349,8 @@ FROM [MyDb].[dbo].[Table1]
 
 This little trick allows to generate CREATE TABLE script only.
 
-```sql
-EXEC x_CopyData @Pretend=1 , @Copy=0 , @Create=1 , @SourceTable='Table1' , @SourceDatabase='MyDb' ;
+```
+EXEC x_CopyData @Copy = 0 , @Create = 1 , @SourceTable='Table1' , @SourceDatabase = 'MyDb' , @Pretend = 1;
 ```
 
 ```sql
@@ -364,8 +366,8 @@ CREATE TABLE [MyDb].[dbo].[Table1]
 
 You may also copy data between two servers.
 
-```sql
-EXEC x_CopyData @Pretend=1 , @Copy=1 , @Create=1 , @Drop=1 , @Delete=1
+```
+EXEC x_CopyData @Pretend = 1 , @Copy = 1 , @Create = 1 , @Drop = 1 , @Delete = 1
     , @SourceDatabase='MyDb' , @SourceTable='Table1' , @DestinationServer='LinkedSrv' , @DestinationDatabase='Backup' ;
 ```
 
