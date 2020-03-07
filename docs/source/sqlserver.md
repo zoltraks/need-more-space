@@ -9,9 +9,9 @@ Have fun.
 
 [Installation script for all functions](../../sql/SqlServer-All.sql)
 
-It is recommended to create separate database catalog (i.e. **DBAtools**) for utility scripts.
+It is recommended to create separate database catalog like **DBAtools** for utility scripts.
 
-```
+``` 
 CREATE DATABASE [DBAtools] ON PRIMARY 
 ( NAME = N'DBAtools', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools.mdf'
 , SIZE = 2048KB , FILEGROWTH = 10240KB )
@@ -27,7 +27,7 @@ Show index column
 
 Show index columns for tables in database.
 
-```
+``` 
 EXEC x_ShowIndexColumn @Help = 1 ;
 ```
 
@@ -42,7 +42,7 @@ EXEC x_ShowIndexColumn @Help = 1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```
+``` 
 EXEC x_ShowIndexColumn @Pretend = 1 ;
 ```
 
@@ -67,7 +67,7 @@ ORDER BY
     s.name , t.name , i.name
 ```
 
-```
+``` 
 EXEC x_ShowIndexColumn ;
 ```
 
@@ -97,19 +97,18 @@ Simply display what database server is doing now.
 
 This procedure has no relevant parameters.
 
-```
+``` 
 EXEC x_OperationStatus ;
 ```
 
 | Database | Command | Status | % | Wait type | Start time | Reads | Writes | Time taken | CPU Time | Time left | Session | Query text |                      
 | -------- | ------- | ------ | - | --------- | ---------- | ----- | ------ | ---------- | -------- | --------- | ------- | ---------- |         
-| master | RESTORE&nbsp;DATABASE | suspended | 5.60 | BACKUPTHREAD | 2019-11-01 09:52:34.973 | 2 | 0 | 00:50 | 00:00 | 14:03 | 87 | RESTORE DATABASE [ExampleTemp] FROM  DISK = N'E:\SQLBackups\Example\Example_backup_2019_10_30_160003_0084574.tlog' WITH  FILE = 2,  MOVE N' Example' TO N'E:\Temp\ExampleTemp.mdf',  MOVE N' Example_log' TO N'E:\Temp\ExampleTemp_log.ldf',  NORECOVERY,  NOUNLOAD,  REPLACE,  STATS = 10 | 
+| master | RESTORE&nbsp; DATABASE | suspended | 5.60 | BACKUPTHREAD | 2019-11-01 09:52:34.973 | 2 | 0 | 00:50 | 00:00 | 14:03 | 87 | RESTORE DATABASE [ExampleTemp] FROM  DISK = N'E:\SQLBackups\Example\Example_backup_2019_10_30_160003_0084574.tlog' WITH  FILE = 2, MOVE N' Example' TO N'E:\Temp\ExampleTemp.mdf', MOVE N' Example_log' TO N'E:\Temp\ExampleTemp_log.ldf', NORECOVERY, NOUNLOAD, REPLACE, STATS = 10 | 
 | master | SELECT | suspended | 0.00 | TRACEWRITE | 2019-11-01 07:40:00.500 | 0 | 0 | 33:25 | 00:00 | 00:00 | 76 | create procedure sys.sp_trace_getdata | (@traceid int, |  @records int = 0 | )asselect * from OpenRowset(TrcData, @traceid, @records) | 
 |  ExampleTemp | UPDATE | suspended | 0.00 | WRITELOG | 2019-11-01 09:53:25.357 | 0 | 0 | 00:00 | 00:00 | 00:00 | 71 | (@data datetime)UPDATE SomeTable SET stamp=@data WHERE id = 229074 | 
-| ExampleTemp | CONDITIONAL | running | 0.00 | NULL | 2019-11-01 10:08:10.717 | 0 | 0 | 00:00 | 00:00 | 00:00 | 97 | IF NOT EXISTS ( SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ExampleTable' AND COLUMN_NAME = 'MissingColumn' ) | ALTER TABLE [ExampleTable] ADD [MissingColumn] FLOAT NULL...
+| ExampleTemp | CONDITIONAL | running | 0.00 | NULL | 2019-11-01 10:08:10.717 | 0 | 0 | 00:00 | 00:00 | 00:00 | 97 | IF NOT EXISTS ( SELECT 1 FROM INFORMATION_SCHEMA. COLUMNS WHERE TABLE_NAME = 'ExampleTable' AND COLUMN_NAME = 'MissingColumn' ) | ALTER TABLE [ExampleTable] ADD [MissingColumn] FLOAT NULL... 
 | ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] | 
 | OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... | 
-
 
 Find duplicates
 ---------------
@@ -118,21 +117,21 @@ Find duplicates
 
 Find duplicates in table.
 
-```
+``` 
 EXEC x_FindDuplicates @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | @Table | NVARCHAR(515) | Table name |
-| @Columns | NVARCHAR(MAX) | Column list separated by comma, semicolon or whitespace (i.e. "col1, [Other One] , col2") |
+| @Columns | NVARCHAR(MAX) | Column list separated by comma, semicolon or whitespace (i.e."col1, [Other One] , col2") |
 | @Expand | NVARCHAR(MAX) | Expand results by including additional columns for duplicated records |
 | @Where | NVARCHAR(MAX) | Optional filter for WHERE |
 | @Top | INT | Maximum count of rows |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```
+``` 
 EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'column1 , [Other One] , Col3' , @Pretend = 1 ;
 ```
 
@@ -153,7 +152,7 @@ ORDER BY
 
 You may want to expand your results by showing each duplicate record for further analysis.
 
-```
+``` 
 EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'year,day' , @Expand = 'id , stamp' , @Pretend = 1 ;
 ```
 
@@ -186,7 +185,7 @@ File configuration
 
 Show database files configuration.
 
-```
+``` 
 EXEC x_FileConfiguration @Help = 1 ;
 ```
 
@@ -196,7 +195,7 @@ EXEC x_FileConfiguration @Help = 1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```
+``` 
 EXEC x_FileConfiguration @Database = 'TempDB' , @Pretend = 1 ;
 ```
 
@@ -225,7 +224,7 @@ FROM
     [TempDB].sys.database_files
 ```
 
-```
+``` 
 EXEC x_FileConfiguration @Database = 'TempDB' ;
 ```
 
@@ -255,7 +254,7 @@ Show basic information about memory amount and state.
 
 This procedure has no relevant parameters.
 
-```
+``` 
 EXEC x_SystemMemory ;
 ```
 
@@ -272,7 +271,7 @@ Show default contraint.
 
 This procedure may be used to show default contraints for specific tables and columns.
 
-```
+``` 
 EXEC x_ShowDefaultContraint @Help = 1 ;
 ```
 
@@ -286,7 +285,7 @@ EXEC x_ShowDefaultContraint @Help = 1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-```
+``` 
 EXEC x_ShowDefaultContraint @Database = 'ContactList' , @Column = 'DisplayOrder' ;
 ```
 
@@ -307,35 +306,36 @@ This procedure may optionally create destination table, drop it first, or delete
 
 Will also work with linked servers.
 
-```
+``` 
 EXEC x_CopyData @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
-| @Pretend | BIT | Print queries to be executed but don't do anything. Will however read column definition from source table. |
+| @Pretend | BIT | Print queries to be executed but don't do anything. Will however read column definition from source table.|
 | @Help | BIT | Show this help |
-| @SourceDatabase | NVARCHAR(128) | Source database name. Optional. |
-| @SourceSchema | NVARCHAR(128) | Source schema name. If omited, default "dbo" will be used. |
-| @SourceTable | NVARCHAR(128) | Source table name. Required. |
-| @SourceServer | NVARCHAR(128) | Source linked server. Optional. |
-| @DestinationDatabase | NVARCHAR(128) | Destination database name. If not specified, source database name will be used. |
-| @DestinationSchema | NVARCHAR(128) | Destination schema name. If omited, default "dbo" will be used. |
-| @DestinationTable | NVARCHAR(128) | Destination table name. If not specified, source table name will be used. |
-| @DestinationServer | NVARCHAR(128) | Destination linked server. Optional. Be aware that trying to create or drop table will require linked server to be configured for RPC. |
-| @Copy | BIT | Copy data with simple query INSERT INTO ... SELECT FROM ... with full list of columns. |
-| @Create | BIT | Create destination table if not exists. |
-| @Drop | BIT | Drop destination table if exists. |
-| @Delete | BIT | Delete data from destination table first. |
-| @IncludeIdentity | BIT | Include identity columns for copying. |
-| @IncludeComputed | BIT | Include computed columns for copying. By default computed columns are not copied nor created. |
-| @IdentityNullable | BIT | Force identity column to be nullable in create table script. |
-
+| @SourceDatabase | NVARCHAR(128) | Source database name. Optional.|
+| @SourceSchema | NVARCHAR(128) | Source schema name. If omited, default "dbo" will be used.|
+| @SourceTable | NVARCHAR(128) | Source table name. Required.|
+| @SourceServer | NVARCHAR(128) | Source linked server. Optional.|
+| @DestinationDatabase | NVARCHAR(128) | Destination database name. If not specified, source database name will be used.|
+| @DestinationSchema | NVARCHAR(128) | Destination schema name. If omited, default "dbo" will be used.|
+| @DestinationTable | NVARCHAR(128) | Destination table name. If not specified, source table name will be used.|
+| @DestinationServer | NVARCHAR(128) | Destination linked server. Optional. Be aware that trying to create or drop table will require linked server to be configured for RPC.|
+| @Copy | BIT | Copy data with simple query INSERT INTO ... SELECT FROM ... with full list of columns.|
+| @Create | BIT | Create destination table if not exists.|
+| @Drop | BIT | Drop destination table if exists.|
+| @Delete | BIT | Delete data from destination table first.|
+| @Where | NVARCHAR(2000) | Optional WHERE clausule for SELECT operation.|
+| @IncludeIdentity | BIT | Include identity columns for copying.|
+| @IncludeComputed | BIT | Include computed columns for copying. By default computed columns are not copied nor created.|
+| @IdentityNullable | BIT | Force identity column to be nullable in create table script.|
 
 Use pretend mode to see what will be done.
 
-```
-EXEC x_CopyData @SourceDatabase = 'MyDb' , @SourceTable = 'Table1' , @DestinationDatabase = 'Backup' , @Pretend = 1 ;
+``` 
+EXEC x_CopyData @SourceDatabase = 'MyDb' , @SourceTable = 'Table1' , @DestinationDatabase = 'Backup'
+  , @Pretend = 1 ;
 ```
 
 ```sql
@@ -346,10 +346,9 @@ SELECT
 FROM [MyDb].[dbo].[Table1]
 ```
 
-
 This little trick allows to generate CREATE TABLE script only.
 
-```
+``` 
 EXEC x_CopyData @Copy = 0 , @Create = 1 , @SourceTable='Table1' , @SourceDatabase = 'MyDb' , @Pretend = 1;
 ```
 
@@ -366,14 +365,15 @@ CREATE TABLE [MyDb].[dbo].[Table1]
 
 You may also copy data between two servers.
 
-```
+``` 
 EXEC x_CopyData @Pretend = 1 , @Copy = 1 , @Create = 1 , @Drop = 1 , @Delete = 1
-    , @SourceDatabase='MyDb' , @SourceTable='Table1' , @DestinationServer='LinkedSrv' , @DestinationDatabase='Backup' ;
+    , @SourceDatabase='MyDb' , @SourceTable='Table1'
+    , @DestinationServer='LinkedSrv' , @DestinationDatabase='Backup' ;
 ```
 
 However linked server needs to be configured for RPC if you want to use **@Create** or **@Drop** options.
 
-```
+``` 
 EXEC (N'
 IF OBJECT_ID(N''[Backup].[dbo].[Table1]'') IS NOT NULL
 DROP TABLE [Backup].[dbo].[Table1]
@@ -397,4 +397,20 @@ INSERT INTO [LinkedSrv].[Backup].[dbo].[Table1]
 SELECT
   [id] , [ancestor] , [line] , [description]
 FROM [MyDb].[dbo].[Table1]
+```
+
+It might be handy to use **@Where** parameter to filter data.
+
+```
+EXEC x_CopyData @SourceDatabase = 'MyDb' , @SourceTable = 'Table1' , @DestinationDatabase = 'Backup'
+  , @Where = '[id] > 123 AND [id] < 567' , @Pretend = 1 ;
+```
+
+```sql
+INSERT INTO [Backup].[dbo].[Table1]
+( [id] , [ancestor] , [line] , [description] )
+SELECT
+  [id] , [ancestor] , [line] , [description]
+FROM [MyDb].[dbo].[Table1]
+WHERE [id] > 123 AND [id] < 567
 ```
