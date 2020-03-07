@@ -1,10 +1,15 @@
 CHANGELOG
 =========
 
+2020-03-07
+----------
+
+Added new function to **SqlServer** copy table data **x_CopyData**. Check this out.
+
 2020-03-05
 ----------
 
-Fix EXECUTE operation is SQLServer scripts using following expression ``^EXECUTE \((N'[^']+')\)`` with ``EXEC sp_executesql $1``.
+Fix EXECUTE operation in **SqlServer** scripts using following expression ``^EXECUTE \((N'[^']+')\)`` with ``EXEC sp_executesql $1``.
 
 2019-11-01
 ----------
