@@ -16,6 +16,10 @@ This repository contains scripts for installation of selected utility functions.
 What you get
 ------------
 
+This repository contains database management scripts. Designed to be used by DBA and developers for doing administrative or other special database tasks.
+
+## Microsoft SQL Server ##
+
 | Procedure | Description |
 | --------- | ----------- |
 | x_ShowIndex |  Show indexes in database. |
@@ -27,6 +31,20 @@ What you get
 | [x_ShowDefaultContraint](docs/source/sqlserver.md#show-default-constraint) | Show default contraints. |
 | [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |
 | [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
+
+## MySQL ##
+
+| Procedure | Description |
+| --------- | ----------- |
+| [x_ShowStorageEngineSize](docs/source/mysql.md#show-storage-engine-size) | Display size taken by data and index for all storage engines used. |
+
+
+## SQLite ##
+
+Are you joking?
+
+You may however check [schema](schema/) catalog for some database create scripts.
+
 
 Changes
 -------
