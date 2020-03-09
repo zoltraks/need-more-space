@@ -16,7 +16,9 @@ This repository contains scripts for installation of selected utility functions.
 What you get
 ------------
 
-This repository contains database management scripts. Designed to be used by DBA and developers for doing administrative or other special database tasks.
+This repository contains database management scripts.
+
+Designed to be used by administrators and developers for doing maintenance or other special database tasks.
 
 ## Microsoft SQL Server ##
 
