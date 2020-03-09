@@ -20,7 +20,6 @@ LOG ON
 , SIZE = 1024KB , FILEGROWTH = 10240KB )
 ```
 
-
 Show index column
 -----------------
 
@@ -110,6 +109,22 @@ EXEC x_OperationStatus ;
 | ExampleTemp | CONDITIONAL | running | 0.00 | NULL | 2019-11-01 10:08:10.717 | 0 | 0 | 00:00 | 00:00 | 00:00 | 97 | IF NOT EXISTS ( SELECT 1 FROM INFORMATION_SCHEMA. COLUMNS WHERE TABLE_NAME = 'ExampleTable' AND COLUMN_NAME = 'MissingColumn' ) | ALTER TABLE [ExampleTable] ADD [MissingColumn] FLOAT NULL... 
 | ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] | 
 | OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... | 
+
+Show identity seed
+------------------
+
+Show identity seed value for tables in database.
+
+Generate report for all tables and identity column seed value together
+with DBCC CHECKIDENT ( '[table]' , RESEED , 434342 ) script pattern to recreate it manually.
+
+```sql
+EXEC x_ShowIdentitySeed @Help = 1 ;
+```
+
+```sql
+EXEC x_ShowIdentitySeed @Database = 'DbName' ;
+```
 
 Find duplicates
 ---------------

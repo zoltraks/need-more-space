@@ -28,7 +28,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | [x_ShowIndexColumn](docs/source/sqlserver.md#show-index-column) | Show index columns for tables in database. |
 | [x_OperationStatus](docs/source/sqlserver.md#operation-status) | Show system operation status. |
 | [x_FileConfiguration](docs/source/sqlserver.md#file-configuration) | Show database files configuration. |
-| x_ShowIdentitySeed | Show identity seed value for tables in database. |
+| [x_ShowIdentitySeed](docs/source/sqlserver.md#show-identity-seed) | Show identity seed value for tables in database. |
 | [x_ShowDefaultContraint](docs/source/sqlserver.md#show-default-constraint) | Show default contraints. |
 | [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |
 | [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
