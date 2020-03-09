@@ -26,11 +26,12 @@ This repository contains database management scripts. Designed to be used by DBA
 | [x_ShowIndexColumn](docs/source/sqlserver.md#show-index-column) | Show index columns for tables in database. |
 | [x_OperationStatus](docs/source/sqlserver.md#operation-status) | Show system operation status. |
 | [x_FileConfiguration](docs/source/sqlserver.md#file-configuration) | Show database files configuration. |
-| [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
 | x_ShowIdentitySeed | Show identity seed value for tables in database. |
 | [x_ShowDefaultContraint](docs/source/sqlserver.md#show-default-constraint) | Show default contraints. |
 | [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |
 | [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
+| [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
+| [x_SystemVersion](docs/source/sqlserver.md#system-version) | Show version information. |
 
 ## MySQL ##
 
@@ -43,7 +44,7 @@ This repository contains database management scripts. Designed to be used by DBA
 
 Are you joking?
 
-You may however check [schema](schema/) catalog for some database create scripts.
+You may however check [**schema**](schema/) catalog for some database create scripts.
 
 
 Changes

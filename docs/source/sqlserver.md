@@ -20,6 +20,7 @@ LOG ON
 , SIZE = 1024KB , FILEGROWTH = 10240KB )
 ```
 
+
 Show index column
 -----------------
 
@@ -261,6 +262,27 @@ EXEC x_SystemMemory ;
 | Physical memory (MB) | Available memory (MB) | Total page file (MB) | Available page file (MB) | System cache (MB) | Memory used (MB) | Memory state |
 | -------------------- | --------------------- | -------------------- | ------------------------ | ----------------- | ---------------- | ------------ |
 | 65535 | 5795 | 131069 | 70972 | 1435 | 56484 | Available physical memory is high |
+
+System version
+--------------
+
+[Installation script for x_SystemVersion](../../sql/SqlServer/x_SystemVersion.sql)
+
+Show version information.
+
+This procedure has no relevant parameters.
+
+``` 
+EXEC x_SystemVersion ;
+```
+
+| Name | Value |
+| ---- | ----- |
+| Version | 15.0.2000.5 |
+| Product | Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)   Sep 24 2019 13:48:23   Copyright (C) 2019 Microsoft Corporation  Developer Edition (64-bit) on Windows 10 Pro 10.0 <X64> (Build 18362: ) (Hypervisor) 
+| Edition | Developer Edition (64-bit) |
+| Level | RTM |
+
 
 Show default contraint
 ----------------------
