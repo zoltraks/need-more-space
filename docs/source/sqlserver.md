@@ -51,6 +51,16 @@ LOG ON
 CREATE LOGIN [monitor] WITH PASSWORD=N'SecretPassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
 ```
 
+```sql
+CREATE USER [monitor] FOR LOGIN [swrmonitor]
+```
+
+To change password for existing user use this example.
+
+```sql
+ALTER LOGIN [monitor] WITH PASSWORD=N'Secret123'
+```
+
 Enable **Activity Monitor** in **SQL Server Management Studio**.
 
 ```sql
@@ -92,19 +102,8 @@ GRANT EXECUTE ON [DBAtools].dbo.x_SystemMemory TO [monitor]
 GRANT EXECUTE ON [DBAtools].dbo.x_SystemVersion TO [monitor]
 ```
 
-Alternative syntax.
-
 ```sql
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_SystemMemory TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_CopyData TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_FileConfiguration TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_FindDuplicates TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_OperationStatus TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_ShowDefaultConstraint TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_ShowIdentitySeed TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_ShowIndexColumn TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_SystemMemory TO [monitor]
-GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_SystemVersion TO [monitor]
+GRANT SELECT ON [DBAtools].dbo.v_WaitType TO [monitor]
 ```
 
 ### Check ###
@@ -577,6 +576,42 @@ SELECT
   [id] , [ancestor] , [line] , [description]
 FROM [MyDb].[dbo].[Table1]
 WHERE [id] > 123 AND [id] < 567
+```
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Wait types
+----------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+This function will return description table for wait types which may be handy in your reports.
+
+```sql
+SELECT [Name] , [Text]
+FROM [DBAtools].dbo.v_WaitType()
+WHERE [Name] LIKE 'ASYNC_%' 
+ORDER BY [Name]
+```
+
+| Name | Text |
+| ---- | ---- |
+| ASYNC_DISKPOOL_LOCK | Occurs when there is an attempt to synchronize parallel threads that are performing tasks such as creating or initializing a file. |
+| ASYNC_IO_COMPLETION | Occurs when a task is waiting for I/Os to finish. |
+| ASYNC_NETWORK_IO | Occurs on network writes when the task is blocked behind the network. Verify that the client is processing data from the server. |
+| ASYNC_OP_COMPLETION | Internal use only. |
+| ASYNC_OP_CONTEXT_READ | Internal use only. |
+| ASYNC_OP_CONTEXT_WRITE | Internal use only. |
+| ASYNC_SOCKETDUP_IO | Internal use only. |
+
+This dictionary was made from official Microsoft document about **sys.dm_os_wait_stats**.
+
+[https://docs.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/sys-dm-os-wait-stats-transact-sql](https://docs.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/sys-dm-os-wait-stats-transact-sql)
+
+Original data were extracted using regular expression replace.
+
+```
+^\s*([^\t]+?)\s*\t\s*([^\t]+?)\s*$
 ```
 
 [↑ Up ↑](#microsoft-sql-server)

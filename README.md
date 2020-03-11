@@ -1,6 +1,13 @@
 ﻿Need More Space
 ===============
 
+<style>
+table {
+    width: 100%;
+}
+.table-20 table td:first-child  { width: 20%; min-width: 150px; }
+</style>
+
 Hello, comrade. 
 
 Here you will find a set of utility functions for your database.
@@ -22,6 +29,8 @@ Designed to be used by administrators and developers for doing maintenance or ot
 
 ## Microsoft SQL Server ##
 
+<div class="table-20">
+
 | Procedure | Description |
 | --------- | ----------- |
 | x_ShowIndex |  Show indexes in database. |
@@ -35,12 +44,25 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
 | [x_SystemVersion](docs/source/sqlserver.md#system-version) | Show version information. |
 
+</div>
+
+<div class="table-20">
+
+| Function | Description |
+| -------- | ----------- |
+| [v_WaitType](docs/source/sqlserver.md#wait-type) | Return table of wait type secriptions. |
+
+</div>
+
 ## MySQL ##
+
+<div class="table-20">
 
 | Procedure | Description |
 | --------- | ----------- |
 | [x_ShowStorageEngineSize](docs/source/mysql.md#show-storage-engine-size) | Display size taken by data and index for all storage engines used. |
 
+</div>
 
 ## SQLite ##
 
