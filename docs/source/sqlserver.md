@@ -9,6 +9,31 @@ Have fun.
 
 [Installation script for all functions](../../sql/SqlServer-All.sql)
 
+```sql
+EXEC x_SystemVersion
+```
+
+```sql
+EXEC dbo.x_SystemVersion
+```
+
+```sql
+EXEC [DBAtools].dbo.x_SystemVersion
+```
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Database Preparation
+--------------------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+You may skip this option if you already have database catalog needed for installation scripts.
+
+Or you might choose to follow some of following examples to create **[monitor]** user and **[DBAtools]** catalog with desired configuration.
+
+### Catalog ###
+
 It is recommended to create separate database catalog like **DBAtools** for utility scripts.
 
 ``` 
@@ -20,8 +45,80 @@ LOG ON
 , SIZE = 1024KB , FILEGROWTH = 10240KB )
 ```
 
+### User ###
+
+```sql
+CREATE LOGIN [monitor] WITH PASSWORD=N'SecretPassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+```
+
+Enable **Activity Monitor** in **SQL Server Management Studio**.
+
+```sql
+GRANT VIEW SERVER STATE TO [monitor]
+```
+
+Allow trace in **SQL Server Profiler**. 
+
+```sql
+GRANT ALTER TRACE TO [monitor]
+```
+
+### Owner ###
+
+Probably better to have different user like **[dba]** for operational access and this user should be owner of **[DBAtools]** database. For other users like **[monitor]** execution permission permission should be granted (sww below).
+
+Unsafe, but if you still need, here you have a template.
+
+```sql
+USE [DBAtools]
+GO
+
+ALTER ROLE [db_owner] ADD MEMBER [monitor]
+```
+
+### Access ###
+
+Additional execution permissions may be needed for users.
+
+```sql
+GRANT EXECUTE ON [DBAtools].dbo.x_CopyData TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_FileConfiguration TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_FindDuplicates TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_OperationStatus TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_ShowDefaultConstraint TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_ShowIdentitySeed TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_ShowIndexColumn TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_SystemMemory TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_SystemVersion TO [monitor]
+```
+
+Alternative syntax.
+
+```sql
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_SystemMemory TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_CopyData TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_FileConfiguration TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_FindDuplicates TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_OperationStatus TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_ShowDefaultConstraint TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_ShowIdentitySeed TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_ShowIndexColumn TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_SystemMemory TO [monitor]
+GRANT EXECUTE ON OBJECT::[DBAtools].dbo.x_SystemVersion TO [monitor]
+```
+
+### Check ###
+
+```sql
+EXEC dbo.x_SystemVersion
+```
+
+[↑ Up ↑](#microsoft-sql-server)
+
 Show index column
 -----------------
+
+[↑ Up ↑](#microsoft-sql-server)
 
 [Installation script for x_ShowIndexColumn](../../sql/SqlServer/x_ShowIndexColumn.sql)
 
@@ -86,8 +183,12 @@ EXEC x_ShowIndexColumn ;
 | dbo | BlitzFirst_WaitStats | PK__BlitzFir__3214EC271BFD2C07 | ID | 1 | 1 | 1 |
 | dbo | CommandLog | PK_CommandLog | ID | 1 | 1 | 1 |
 
+[↑ Up ↑](#microsoft-sql-server)
+
 Operation status
 ----------------
+
+[↑ Up ↑](#microsoft-sql-server)
 
 [Installation script for x_OperationStatus](../../sql/SqlServer/x_OperationStatus.sql)
 
@@ -126,8 +227,12 @@ EXEC x_ShowIdentitySeed @Help = 1 ;
 EXEC x_ShowIdentitySeed @Database = 'DbName' ;
 ```
 
+[↑ Up ↑](#microsoft-sql-server)
+
 Find duplicates
 ---------------
+
+[↑ Up ↑](#microsoft-sql-server)
 
 [Installation script for x_FindDuplicates](../../sql/SqlServer/x_FindDuplicates.sql)
 
@@ -194,8 +299,12 @@ ORDER BY
     __X__.[year] , __X__.[day] , __Y__.[id] , __Y__.[stamp]
 ```
 
+[↑ Up ↑](#microsoft-sql-server)
+
 File configuration
 ------------------
+
+[↑ Up ↑](#microsoft-sql-server)
 
 [Installation script for x_FileConfiguration](../../sql/SqlServer/x_FileConfiguration.sql)
 
@@ -261,8 +370,12 @@ EXEC x_FileConfiguration @Database = 'TempDB' ;
 | tempdev12 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 13 | DATA | F:\DATABASE\TempDB\tempdev12.mdf |
 | tempdev01 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 14 | DATA | F:\DATABASE\TempDB\tempdev01.mdf |
 
+[↑ Up ↑](#microsoft-sql-server)
+
 System memory
 -------------
+
+[↑ Up ↑](#microsoft-sql-server)
 
 [Installation script for x_SystemMemory](../../sql/SqlServer/x_SystemMemory.sql)
 
@@ -298,18 +411,21 @@ EXEC x_SystemVersion ;
 | Edition | Developer Edition (64-bit) |
 | Level | RTM |
 
+[↑ Up ↑](#microsoft-sql-server)
 
-Show default contraint
-----------------------
+Show default constraint
+-----------------------
 
-[Installation script for x_ShowDefaultContraint](../../sql/SqlServer/x_ShowDefaultContraint.sql)
+[↑ Up ↑](#microsoft-sql-server)
 
-Show default contraint.
+[Installation script for x_ShowDefaultConstraint](../../sql/SqlServer/x_ShowDefaultConstraint.sql)
 
-This procedure may be used to show default contraints for specific tables and columns.
+Show default constraint.
+
+This procedure may be used to show default constraints for specific tables and columns.
 
 ``` 
-EXEC x_ShowDefaultContraint @Help = 1 ;
+EXEC x_ShowDefaultConstraint @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
@@ -330,8 +446,12 @@ EXEC x_ShowDefaultContraint @Database = 'ContactList' , @Column = 'DisplayOrder'
 | ------ | ----- | ---------- | ------ | ------ | ------ | ------ |
 | dbo | MessengerService | DF__Messenger__Displ__0519C6AF | DisplayOrder | 85575343 | 2019-11-03 14:29:17.890 | 2019-11-03 14:29:17.890 |
 
+[↑ Up ↑](#microsoft-sql-server)
+
 Copy data
 ---------
+
+[↑ Up ↑](#microsoft-sql-server)
 
 [Installation script for x_CopyData](../../sql/SqlServer/x_CopyData.sql)
 
@@ -458,3 +578,5 @@ SELECT
 FROM [MyDb].[dbo].[Table1]
 WHERE [id] > 123 AND [id] < 567
 ```
+
+[↑ Up ↑](#microsoft-sql-server)
