@@ -52,7 +52,7 @@ CREATE LOGIN [monitor] WITH PASSWORD=N'SecretPassword', DEFAULT_DATABASE=[master
 ```
 
 ```sql
-CREATE USER [monitor] FOR LOGIN [swrmonitor]
+CREATE USER [monitor] FOR LOGIN [monitor]
 ```
 
 To change password for existing user use this example.
@@ -82,7 +82,7 @@ Unsafe, but if you still need, here you have a template.
 ```sql
 USE [DBAtools]
 GO
-
+CREATE USER [monitor] FOR LOGIN [monitor]
 ALTER ROLE [db_owner] ADD MEMBER [monitor]
 ```
 
