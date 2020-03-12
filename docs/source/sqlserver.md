@@ -7,7 +7,7 @@ You may also find **@Pretend** parameter useful to check what SQL query will be 
 
 Have fun.
 
-[Installation script for all functions](../../sql/SqlServer-All.sql)
+[Installation script for all functions](../../sql/SQLServer-All.sql)
 
 ```sql
 EXEC x_SystemVersion
