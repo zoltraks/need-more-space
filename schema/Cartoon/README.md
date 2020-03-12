@@ -5,12 +5,15 @@ This is example database for the cartoon heroes.
 
 ```sql
 EXEC DBAtools.dbo.x_FileConfiguration @Database='CARTOON';
-GO
+```
+
+```sql
 DBCC IND ('CARTOON' , 'dbo.HERO' , -1)
-GO
+```
+
+```sql
 DBCC TRACEON(3604)
 DBCC PAGE ('CARTOON' , 1 , 312 , 3) WITH TABLERESULTS
-GO
 ```
 
 | Name | Size (MB) | Autogrowth | Growth (MB) | Growth (%) | State | Limit (MB) | Number | Type | File |
@@ -38,3 +41,9 @@ GO
 0000000000000028:   0076006f 00570061 0072006e 00650072 00200042  .v.o.W.a.r.n.e.r. .B
 000000000000003C:   0072006f 0073002e 00                          .r.o.s...
 ```
+
+```sql
+DBCC PAGE ('CARTOON' , 1 , 320 , 3) WITH TABLERESULTS
+```
+
+![](/media/shot/20_03_12_cartoon_02.png)
