@@ -3,9 +3,9 @@ Database Sample Directory
 
 This directory contains scripts to create various example databases.
 
+### [Cartoon Database](Cartoon/README.md)
 
-## [Contact List Database](ContactList/README.md) ##
-
+### [Contacts Database](Contacts/README.md)
 
 Naming conventions
 ------------------
@@ -15,7 +15,6 @@ Depending on the database server, database catalog names are written in **Pascal
 This may also apply to table names, in a limited scope.
 
 When it comes to table names, singular rather than plural names are preferred.
-
 
 Style conventions
 -----------------
