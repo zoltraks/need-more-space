@@ -3,9 +3,9 @@ Database Sample Directory
 
 This directory contains scripts to create various example databases.
 
-## [Cartoon Database](Cartoon/README.md) ##
+### [Cartoon Database](Cartoon/README.md)
 
-## [Contacts Database](Contacts/README.md) ##
+### [Contacts Database](Contacts/README.md)
 
 Naming conventions
 ------------------
