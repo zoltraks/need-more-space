@@ -596,8 +596,8 @@ ORDER BY [Name]
 
 | Name | Text |
 | ---- | ---- |
-| ASYNC_DISKPOOL_LOCK | Occurs when there is an attempt to synchronize parallel threads that are performing tasks such as creating or initializing a file. |
-| ASYNC_IO_COMPLETION | Occurs when a task is waiting for I/Os to finish. |
+| ASYNC_DISKPOOL_LOCK | Attempt to synchronize parallel threads that are performing tasks such as creating or initializing a file. |
+| ASYNC_IO_COMPLETION | Task is waiting for I/Os to finish. |
 | ASYNC_NETWORK_IO | Occurs on network writes when the task is blocked behind the network. Verify that the client is processing data from the server. |
 | ASYNC_OP_COMPLETION | Internal use only. |
 | ASYNC_OP_CONTEXT_READ | Internal use only. |

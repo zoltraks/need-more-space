@@ -1,12 +1,11 @@
-﻿Need More Space
-===============
-
-<style>
+﻿<style>
 table {
     width: 100%;
 }
 .table-20 table td:first-child  { width: 20%; min-width: 150px; }
 </style>
+Need More Space
+===============
 
 Hello, comrade. 
 
@@ -50,7 +49,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 
 | Function | Description |
 | -------- | ----------- |
-| [v_WaitType](docs/source/sqlserver.md#wait-type) | Return table of wait type secriptions. |
+| [v_WaitType](docs/source/sqlserver.md#wait-types) | Return table of wait type secriptions. |
 
 </div>
 
