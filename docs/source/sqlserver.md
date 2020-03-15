@@ -469,7 +469,7 @@ EXEC x_ShowDefaultConstraint @Help = 1 ;
 | @Help | BIT | Show this help |
 
 ``` 
-EXEC x_ShowDefaultContraint @Database = 'ContactList' , @Column = 'DisplayOrder' ;
+EXEC x_ShowDefaultConstraint @Database = 'ContactList' , @Column = 'DisplayOrder' ;
 ```
 
 | Schema | Table | Constraint | Column | Object | Create | Modify |
