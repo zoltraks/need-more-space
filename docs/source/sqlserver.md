@@ -9,6 +9,8 @@ Have fun.
 
 [Installation script for all functions](../../sql/SQLServer-All.sql)
 
+Simple check if scripts are working correctly.
+
 ```sql
 EXEC x_SystemVersion
 ```
@@ -19,6 +21,35 @@ EXEC dbo.x_SystemVersion
 
 ```sql
 EXEC [DBAtools].dbo.x_SystemVersion
+```
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Maintenance Tips
+----------------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+## Basic configuration
+
+```sql
+SELECT  
+  SERVERPROPERTY('MachineName') AS Computer
+  ,
+  SERVERPROPERTY('ServerName') AS Instance
+  , 
+  SERVERPROPERTY('Collation') AS Collation
+```
+
+## Default paths
+
+```sql
+SELECT 
+  DefaultDataPath = SERVERPROPERTY('InstanceDefaultDataPath')
+  ,
+  DefaultLogPath = SERVERPROPERTY('InstanceDefaultLogPath')
+  ,
+  DefaultBackupPath = SERVERPROPERTY('InstanceDefaultBackupPath')
 ```
 
 [↑ Up ↑](#microsoft-sql-server)
