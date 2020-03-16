@@ -73,6 +73,23 @@ Allow trace in **SQL Server Profiler**.
 GRANT ALTER TRACE TO [monitor]
 ```
 
+Enable advanced monitoring usage.
+
+```sql
+USE [model]
+GO
+CREATE USER [monitor] FOR LOGIN [monitor]
+GO
+USE [msdb]
+GO
+CREATE USER [monitor] FOR LOGIN [monitor]
+GO
+USE [msdb]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [monitor]
+GO
+```
+
 ### Owner ###
 
 Probably better to have different user like **[dba]** for operational access and this user should be owner of **[DBAtools]** database. For other users like **[monitor]** execution permission permission should be granted (sww below).
