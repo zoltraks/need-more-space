@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+2020-03-14
+----------
+
+Changed names for x_IdentitySeed from x_ShowIdentitySeed, x_DefaultConstraint from x_ShowDefaultConstraint.
+
+Introduced purge script for removal.
+
 2020-03-07
 ----------
 

@@ -30,6 +30,8 @@ Designed to be used by administrators and developers for doing maintenance or ot
 
 ## Microsoft SQL Server ##
 
+[Installation script for all functions **SQLServer-All.sql** →](sql/SQLServer-All.sql)
+
 <div class="table-20">
 
 | Procedure | Description |
@@ -38,8 +40,8 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | [x_ShowIndexColumn](docs/source/sqlserver.md#show-index-column) | Show index columns for tables in database. |
 | [x_OperationStatus](docs/source/sqlserver.md#operation-status) | Show system operation status. |
 | [x_FileConfiguration](docs/source/sqlserver.md#file-configuration) | Show database files configuration. |
-| [x_ShowIdentitySeed](docs/source/sqlserver.md#show-identity-seed) | Show identity seed value for tables in database. |
-| [x_ShowDefaultContraint](docs/source/sqlserver.md#show-default-constraint) | Show default contraints. |
+| [x_IdentitySeed](docs/source/sqlserver.md#identity-seed) | Show identity seed value for tables in database. |
+| [x_DefaultContraint](docs/source/sqlserver.md#default-constraint) | Show default contraints. |
 | [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |
 | [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
 | [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |

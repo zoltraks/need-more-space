@@ -7,7 +7,7 @@ You may also find **@Pretend** parameter useful to check what SQL query will be 
 
 Have fun.
 
-[Installation script for all functions](../../sql/SQLServer-All.sql)
+[Installation script for all functions **SQLServer-All.sql** →](../../sql/SQLServer-All.sql)
 
 Simple check if scripts are working correctly.
 
@@ -22,6 +22,10 @@ EXEC dbo.x_SystemVersion
 ```sql
 EXEC [DBAtools].dbo.x_SystemVersion
 ```
+
+You may also remove all installed functions by using **SQLServer-Purge.sql** script.
+
+[Script for removing all functions **SQLServer-Purge.sql** →](../../sql/SQLServer-Purge.sql)
 
 [↑ Up ↑](#microsoft-sql-server)
 
@@ -140,11 +144,12 @@ Additional execution permissions may be needed for users.
 
 ```sql
 GRANT EXECUTE ON [DBAtools].dbo.x_CopyData TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_DefaultConstraint TO [monitor]
 GRANT EXECUTE ON [DBAtools].dbo.x_FileConfiguration TO [monitor]
 GRANT EXECUTE ON [DBAtools].dbo.x_FindDuplicates TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_IdentitySeed TO [monitor]
 GRANT EXECUTE ON [DBAtools].dbo.x_OperationStatus TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_ShowDefaultConstraint TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_ShowIdentitySeed TO [monitor]
+GRANT EXECUTE ON [DBAtools].dbo.x_ShowIndex TO [monitor]
 GRANT EXECUTE ON [DBAtools].dbo.x_ShowIndexColumn TO [monitor]
 GRANT EXECUTE ON [DBAtools].dbo.x_SystemMemory TO [monitor]
 GRANT EXECUTE ON [DBAtools].dbo.x_SystemVersion TO [monitor]
@@ -258,7 +263,7 @@ EXEC x_OperationStatus ;
 | ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] | 
 | OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... | 
 
-Show identity seed
+Identity seed
 ------------------
 
 Show identity seed value for tables in database.
@@ -267,11 +272,11 @@ Generate report for all tables and identity column seed value together
 with DBCC CHECKIDENT ( '[table]' , RESEED , 434342 ) script pattern to recreate it manually.
 
 ```sql
-EXEC x_ShowIdentitySeed @Help = 1 ;
+EXEC x_IdentitySeed @Help = 1 ;
 ```
 
 ```sql
-EXEC x_ShowIdentitySeed @Database = 'DbName' ;
+EXEC x_IdentitySeed @Database = 'DbName' ;
 ```
 
 [↑ Up ↑](#microsoft-sql-server)
@@ -460,19 +465,19 @@ EXEC x_SystemVersion ;
 
 [↑ Up ↑](#microsoft-sql-server)
 
-Show default constraint
------------------------
+Default constraint
+------------------
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_ShowDefaultConstraint](../../sql/SqlServer/x_ShowDefaultConstraint.sql)
+[Installation script for x_DefaultConstraint](../../sql/SqlServer/x_DefaultConstraint.sql)
 
 Show default constraint.
 
 This procedure may be used to show default constraints for specific tables and columns.
 
 ``` 
-EXEC x_ShowDefaultConstraint @Help = 1 ;
+EXEC x_DefaultConstraint @Help = 1 ;
 ```
 
 | Parameter | Type | Description |
@@ -486,7 +491,7 @@ EXEC x_ShowDefaultConstraint @Help = 1 ;
 | @Help | BIT | Show this help |
 
 ``` 
-EXEC x_ShowDefaultConstraint @Database = 'ContactList' , @Column = 'DisplayOrder' ;
+EXEC x_DefaultConstraint @Database = 'ContactList' , @Column = 'DisplayOrder' ;
 ```
 
 | Schema | Table | Constraint | Column | Object | Create | Modify |
