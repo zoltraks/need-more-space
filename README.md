@@ -53,7 +53,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 
 | Function | Description |
 | -------- | ----------- |
-| [v_WaitType](docs/source/sqlserver.md#wait-types) | Return table of wait type secriptions. |
+| [v_WaitType](docs/source/sqlserver.md#wait-types) | Return table of wait type descriptions. |
 
 </div>
 
