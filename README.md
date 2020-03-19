@@ -15,9 +15,9 @@ Here you will find a set of utility functions for your database.
 
 This repository contains scripts for installation of selected utility functions.
 
-[Jump to **Microsoft SQL Server** tools](docs/source/sqlserver.md)
+[Jump to **Microsoft SQL Server** tools →](docs/source/sqlserver.md)
 
-[Jump to **MySQL** tools](docs/source/mysql.md)
+[Jump to **MySQL** tools →](docs/source/mysql.md)
 
 [Google!](https://www.google.com/search?q=need+more+space&tbm=isch)
 
