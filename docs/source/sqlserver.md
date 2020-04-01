@@ -177,7 +177,7 @@ Show index column
 Show index columns for tables in database.
 
 ``` 
-EXEC x_ShowIndexColumn @Help = 1 ;
+EXEC x_ShowIndexColumn @Help=1 ;
 ```
 
 | Parameter | Type | Description |                                                            
@@ -272,7 +272,7 @@ Generate report for all tables and identity column seed value together
 with DBCC CHECKIDENT ( '[table]' , RESEED , 434342 ) script pattern to recreate it manually.
 
 ```sql
-EXEC x_IdentitySeed @Help = 1 ;
+EXEC x_IdentitySeed @Help=1 ;
 ```
 
 ```sql
@@ -291,7 +291,7 @@ Find duplicates
 Find duplicates in table.
 
 ``` 
-EXEC x_FindDuplicates @Help = 1 ;
+EXEC x_FindDuplicates @Help=1 ;
 ```
 
 | Parameter | Type | Description |
@@ -363,7 +363,7 @@ File configuration
 Show database files configuration.
 
 ``` 
-EXEC x_FileConfiguration @Help = 1 ;
+EXEC x_FileConfiguration @Help=1 ;
 ```
 
 | Parameter | Type | Description |
@@ -477,7 +477,7 @@ Show default constraint.
 This procedure may be used to show default constraints for specific tables and columns.
 
 ``` 
-EXEC x_DefaultConstraint @Help = 1 ;
+EXEC x_DefaultConstraint @Help=1 ;
 ```
 
 | Parameter | Type | Description |
@@ -516,7 +516,7 @@ This procedure may optionally create destination table, drop it first, or delete
 Will also work with linked servers.
 
 ``` 
-EXEC x_CopyData @Help = 1 ;
+EXEC x_CopyData @Help=1 ;
 ```
 
 | Parameter | Type | Description |
@@ -643,7 +643,7 @@ Schedule Job
 Add job and schedule execution plan.
 
 ``` 
-EXEC x_ScheduleJob @Help = 1 ;
+EXEC x_ScheduleJob @Help=1 ;
 ```
 
 | Parameter | Type | Description |                                                            
@@ -665,6 +665,75 @@ EXEC x_ScheduleJob @Help = 1 ;
 | @EndDate | INT | End date written in YYMMDD format. |
 | @StartTime | INT | Start time written in HHMMSS 24 hour format. |
 | @EndTime | INT | End time written in HHMMSS 24 hour format. |
+
+Let's add job called ``BlitzFirst`` running every 15 minutes everyday.
+It will call procedure ``sp_BlitzFirst`` with options directly in specified ``[DBAtools]`` database.
+
+```sql
+EXEC DBAtools.dbo.x_ScheduleJob @Enable=1 , @Database='DBAtools' , @Name='BlitzFirst' , @Type='Daily' , @Repeat='Minutes' , @Every='15'
+, @Command=N'
+EXEC sp_BlitzFirst 
+  @OutputDatabaseName = ''DBAtools'', 
+  @OutputSchemaName = ''dbo'', 
+  @OutputTableName = ''BlitzFirst'',
+  @OutputTableNameFileStats = ''BlitzFirst_FileStats'',
+  @OutputTableNamePerfmonStats = ''BlitzFirst_PerfmonStats'',
+  @OutputTableNameWaitStats = ''BlitzFirst_WaitStats'',
+  @OutputTableNameBlitzCache = ''BlitzCache'',
+  @OutputTableNameBlitzWho = ''BlitzWho'';
+' ;
+```
+
+If SQL Server Agent is not running you will be noticed.
+
+```
+SQLServerAgent is not currently running so it cannot be notified of this action.
+```
+
+This is script source when called with ``@Pretend=1``.
+
+```sql
+IF EXISTS ( SELECT 1 FROM msdb.dbo.sysjobs WHERE [name] = N'BlitzFirst' )
+EXEC sp_executesql N'EXEC msdb.dbo.sp_delete_job @job_name = N''BlitzFirst'' , @delete_unused_schedule = 0' ;
+
+EXEC msdb.dbo.sp_add_job @job_name = N'BlitzFirst' ;
+
+EXEC msdb.dbo.sp_add_jobstep
+  @job_name = N'BlitzFirst' ,
+  @step_name = N'BlitzFirst' ,
+  @database_name = N'DBAtools' ,
+  @subsystem = N'TSQL' ,
+  @command = N'
+EXEC sp_BlitzFirst 
+  @OutputDatabaseName = ''DBAtools'', 
+  @OutputSchemaName = ''dbo'', 
+  @OutputTableName = ''BlitzFirst'',
+  @OutputTableNameFileStats = ''BlitzFirst_FileStats'',
+  @OutputTableNamePerfmonStats = ''BlitzFirst_PerfmonStats'',
+  @OutputTableNameWaitStats = ''BlitzFirst_WaitStats'',
+  @OutputTableNameBlitzCache = ''BlitzCache'',
+  @OutputTableNameBlitzWho = ''BlitzWho'';
+' ;
+
+IF EXISTS ( SELECT 1 FROM msdb.dbo.sysschedules WHERE [name] = N'BlitzFirst' )
+EXEC sp_executesql N'EXEC msdb.dbo.sp_delete_schedule @schedule_name = N''BlitzFirst'' , @force_delete = 1'  ;
+
+EXEC msdb.dbo.sp_add_schedule
+  @schedule_name = N'BlitzFirst' ,
+  @freq_type = 4 ,
+  @freq_interval = 1 ,
+  @freq_subday_type = 4 ,
+  @freq_subday_interval = 15 ,
+  @active_start_date = 20000101 ,
+  @active_end_date = 99991231 ,
+  @enabled = 1 ;
+
+EXEC msdb.dbo.sp_attach_schedule @job_name = N'BlitzFirst' , @schedule_name = N'BlitzFirst' ;
+
+EXEC msdb.dbo.sp_add_jobserver @job_name = N'BlitzFirst' ;
+```
+
+You may play with UNICODE also.
 
 ```sql
 EXEC dbo.x_ScheduleJob @Pretend=1 , @Name=N'Nächste Żółw'
