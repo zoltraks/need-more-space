@@ -172,7 +172,7 @@ Show index column
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_ShowIndexColumn →](../../sql/SqlServer/x_ShowIndexColumn.sql)
+[Installation script for x_ShowIndexColumn →](../../sql/SQLServer/x_ShowIndexColumn.sql)
 
 Show index columns for tables in database.
 
@@ -242,7 +242,7 @@ Operation status
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_OperationStatus →](../../sql/SqlServer/x_OperationStatus.sql)
+[Installation script for x_OperationStatus →](../../sql/SQLServer/x_OperationStatus.sql)
 
 Show system operation status.
 
@@ -286,7 +286,7 @@ Find duplicates
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_FindDuplicates →](../../sql/SqlServer/x_FindDuplicates.sql)
+[Installation script for x_FindDuplicates →](../../sql/SQLServer/x_FindDuplicates.sql)
 
 Find duplicates in table.
 
@@ -358,7 +358,7 @@ File configuration
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_FileConfiguration →](../../sql/SqlServer/x_FileConfiguration.sql)
+[Installation script for x_FileConfiguration →](../../sql/SQLServer/x_FileConfiguration.sql)
 
 Show database files configuration.
 
@@ -429,7 +429,7 @@ System memory
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_SystemMemory →](../../sql/SqlServer/x_SystemMemory.sql)
+[Installation script for x_SystemMemory →](../../sql/SQLServer/x_SystemMemory.sql)
 
 Show basic information about memory amount and state.
 
@@ -446,7 +446,7 @@ EXEC x_SystemMemory ;
 System version
 --------------
 
-[Installation script for x_SystemVersion →](../../sql/SqlServer/x_SystemVersion.sql)
+[Installation script for x_SystemVersion →](../../sql/SQLServer/x_SystemVersion.sql)
 
 Show version information.
 
@@ -470,7 +470,7 @@ Default constraint
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_DefaultConstraint →](../../sql/SqlServer/x_DefaultConstraint.sql)
+[Installation script for x_DefaultConstraint →](../../sql/SQLServer/x_DefaultConstraint.sql)
 
 Show default constraint.
 
@@ -505,7 +505,7 @@ Copy data
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_CopyData →](../../sql/SqlServer/x_CopyData.sql)
+[Installation script for x_CopyData →](../../sql/SQLServer/x_CopyData.sql)
 
 Copy data from one table to another.
 
@@ -638,7 +638,7 @@ Schedule Job
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_ScheduleJob →](../../sql/SqlServer/x_ScheduleJob.sql)
+[Installation script for x_ScheduleJob →](../../sql/SQLServer/x_ScheduleJob.sql)
 
 Add job and schedule execution plan.
 
@@ -721,7 +721,7 @@ Wait types
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for v_WaitType →](../../sql/SqlServer/v_WaitType.sql)
+[Installation script for v_WaitType →](../../sql/SQLServer/v_WaitType.sql)
 
 This function will return description table for wait types which may be handy in your reports.
 
