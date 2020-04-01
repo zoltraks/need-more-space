@@ -96,5 +96,6 @@ Works also with "Git Bash".
 Notes
 -----
 
-Scripts are saved in **UTF16-LE** encoding because GitHub preview lacks indentation with spaces when using **UTF-8** (with or without BOM). 
+Scripts are saved in **UTF16-LE** encoding for some reasons. One is that currently GitHub preview lacks indentation with spaces when using **UTF-8** (checked with or without BOM).
+
 Sorry for that.
