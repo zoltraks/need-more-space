@@ -31,6 +31,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 ## Microsoft SQL Server ##
 
 [Installation script for all functions **SQLServer-All.sql** →](sql/SQLServer-All.sql)
+[download](https://raw.githubusercontent.com/zoltraks/need-more-space/master/sql/SQLServer-All.sql)
 
 <div class="table-20">
 
