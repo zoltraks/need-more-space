@@ -172,7 +172,7 @@ Show index column
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_ShowIndexColumn](../../sql/SqlServer/x_ShowIndexColumn.sql)
+[Installation script for x_ShowIndexColumn →](../../sql/SqlServer/x_ShowIndexColumn.sql)
 
 Show index columns for tables in database.
 
@@ -242,7 +242,7 @@ Operation status
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_OperationStatus](../../sql/SqlServer/x_OperationStatus.sql)
+[Installation script for x_OperationStatus →](../../sql/SqlServer/x_OperationStatus.sql)
 
 Show system operation status.
 
@@ -286,7 +286,7 @@ Find duplicates
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_FindDuplicates](../../sql/SqlServer/x_FindDuplicates.sql)
+[Installation script for x_FindDuplicates →](../../sql/SqlServer/x_FindDuplicates.sql)
 
 Find duplicates in table.
 
@@ -358,7 +358,7 @@ File configuration
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_FileConfiguration](../../sql/SqlServer/x_FileConfiguration.sql)
+[Installation script for x_FileConfiguration →](../../sql/SqlServer/x_FileConfiguration.sql)
 
 Show database files configuration.
 
@@ -429,7 +429,7 @@ System memory
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_SystemMemory](../../sql/SqlServer/x_SystemMemory.sql)
+[Installation script for x_SystemMemory →](../../sql/SqlServer/x_SystemMemory.sql)
 
 Show basic information about memory amount and state.
 
@@ -446,7 +446,7 @@ EXEC x_SystemMemory ;
 System version
 --------------
 
-[Installation script for x_SystemVersion](../../sql/SqlServer/x_SystemVersion.sql)
+[Installation script for x_SystemVersion →](../../sql/SqlServer/x_SystemVersion.sql)
 
 Show version information.
 
@@ -470,7 +470,7 @@ Default constraint
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_DefaultConstraint](../../sql/SqlServer/x_DefaultConstraint.sql)
+[Installation script for x_DefaultConstraint →](../../sql/SqlServer/x_DefaultConstraint.sql)
 
 Show default constraint.
 
@@ -505,7 +505,7 @@ Copy data
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_CopyData](../../sql/SqlServer/x_CopyData.sql)
+[Installation script for x_CopyData →](../../sql/SqlServer/x_CopyData.sql)
 
 Copy data from one table to another.
 
@@ -633,10 +633,95 @@ WHERE [id] > 123 AND [id] < 567
 
 [↑ Up ↑](#microsoft-sql-server)
 
+Schedule Job
+------------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for x_ScheduleJob →](../../sql/SqlServer/x_ScheduleJob.sql)
+
+Add job and schedule execution plan.
+
+``` 
+EXEC x_ScheduleJob @Help = 1 ;
+```
+
+| Parameter | Type | Description |                                                            
+| --------- | ---- | ----------- |
+| @Help | BIT | Show this help. |
+| @Pretend | BIT | Print queries to be executed but don't do anything. |
+| @Name | NVARCHAR(128) | Database name |
+| @Name | NVARCHAR(128) | Desired job name. It will be used for step name too. |
+| @Command | NVARCHAR(MAX) | Command text for job step. |
+| @Database | NVARCHAR(128) | Database job will be run on. Current database will be used if not specified. |
+| @Owner | NVARCHAR(128) | Owner name. |
+| @Enable | BIT | Enable job. |
+| @Type | NVARCHAR(10) | A value indicating when a job is to be executed. Valid value is one of 'DAILY', 'WEEKLY', 'MONTHLY', 'RELATIVE', 'START', 'IDLE', 'ONCE' or 'NONE'. |
+| @Interval | INT | Days that a job is executed. |
+| @Repeat | NVARCHAR(10) | Specifies units for repeat interval. Valid value is one of 'HOURS', 'MINUTES', 'SECONDS', 'ONCE' or 'NONE'. |
+| @Every | INT | Specifies value for repeat interval. That is number of hours, minutes or seconds depending on chosen repeat interval unit. |
+| @Relative | INT | When schedule type is relative, this value indicates job's occurrence in each month. |
+| @StartDate | INT | Start date written in YYMMDD format. |
+| @EndDate | INT | End date written in YYMMDD format. |
+| @StartTime | INT | Start time written in HHMMSS 24 hour format. |
+| @EndTime | INT | End time written in HHMMSS 24 hour format. |
+
+```sql
+EXEC dbo.x_ScheduleJob @Pretend=1 , @Name=N'Nächste Żółw'
+  , @Type='D', @Interval = 2 , @Repeat = 'M' , @Every = 15 , @Relative = 2
+  , @Owner = 'sa'
+  , @StartTime = 130000 , @EndTime = 143000
+  , @Command = N'SELECT N''Nächste Żółw'''
+  ;
+```
+
+```sql
+IF EXISTS ( SELECT 1 FROM msdb.dbo.sysjobs WHERE [name] = N'Nächste Żółw' )
+EXEC sp_executesql N'EXEC msdb.dbo.sp_delete_job @job_name = N''Nächste Żółw'' , @delete_unused_schedule = 0' ;
+
+EXEC msdb.dbo.sp_add_job @job_name = N'Nächste Żółw' ;
+
+EXEC msdb.dbo.sp_add_jobstep
+  @job_name = N'Nächste Żółw' ,
+  @step_name = N'Nächste Żółw' ,
+  @database_name = N'DBAtools' ,
+  @subsystem = N'TSQL' ,
+  @command = N'SELECT N''Nächste Żółw''' ;
+
+IF EXISTS ( SELECT 1 FROM msdb.dbo.sysschedules WHERE [name] = N'Nächste Żółw' )
+EXEC sp_executesql N'EXEC msdb.dbo.sp_delete_schedule @schedule_name = N''Nächste Żółw'' , @force_delete = 1'  ;
+
+EXEC msdb.dbo.sp_add_schedule
+  @schedule_name = N'Nächste Żółw' ,
+  @freq_type = 4 ,
+  @freq_interval = 2 ,
+  @freq_subday_type = 4 ,
+  @freq_subday_interval = 15 ,
+  @freq_relative_interval = 2 ,
+  @active_start_date = 20000101 ,
+  @active_end_date = 99991231 ,
+  @active_start_time = 130000 ,
+  @active_end_time = 143000 ,
+  @owner_login_name = N'sa' ,
+  @enabled = 0 ;
+
+EXEC msdb.dbo.sp_attach_schedule @job_name = N'Nächste Żółw' , @schedule_name = N'Nächste Żółw' ;
+
+EXEC msdb.dbo.sp_add_jobserver @job_name = N'Nächste Żółw' ;
+```
+
+For more informations about possible values of ``@Interval`` or ``@Every`` parameter values read official documentation about **sp_add_schedule** function.
+
+https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-add-schedule-transact-sql
+
+[↑ Up ↑](#microsoft-sql-server)
+
 Wait types
 ----------
 
 [↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for v_WaitType →](../../sql/SqlServer/v_WaitType.sql)
 
 This function will return description table for wait types which may be handy in your reports.
 

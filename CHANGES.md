@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+2020-04-01
+----------
+
+Added new function for **SqlServer** to help scheduling jobs **x_ScheduleJob**. Check this out.
+
 2020-03-14
 ----------
 
@@ -11,7 +16,7 @@ Introduced purge script for removal.
 2020-03-07
 ----------
 
-Added new function to **SqlServer** copy table data **x_CopyData**. Check this out.
+Added new function for **SqlServer** to help copying table data **x_CopyData**. Check this out.
 
 2020-03-05
 ----------

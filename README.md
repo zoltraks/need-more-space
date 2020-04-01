@@ -46,6 +46,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
 | [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
 | [x_SystemVersion](docs/source/sqlserver.md#system-version) | Show version information. |
+| [x_ScheduleJob](docs/source/sqlserver.md#schedule-job) | Add job and schedule execution plan. |
 
 </div>
 
