@@ -633,7 +633,7 @@ WHERE [id] > 123 AND [id] < 567
 
 [↑ Up ↑](#microsoft-sql-server)
 
-Schedule Job
+Schedule job
 ------------
 
 [↑ Up ↑](#microsoft-sql-server)
