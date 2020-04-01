@@ -670,7 +670,7 @@ Let's add job called ``BlitzFirst`` running every 15 minutes everyday.
 It will call procedure ``sp_BlitzFirst`` with options directly in specified ``[DBAtools]`` database.
 
 ```sql
-EXEC DBAtools.dbo.x_ScheduleJob @Enable=1 , @Database='DBAtools' , @Name='BlitzFirst' , @Type='Daily' , @Repeat='Minutes' , @Every='15'
+EXEC x_ScheduleJob @Enable=1 , @Database='DBAtools' , @Name='BlitzFirst' , @Type='Daily' , @Repeat='Minutes' , @Every='15'
 , @Command=N'
 EXEC sp_BlitzFirst 
   @OutputDatabaseName = ''DBAtools'', 
