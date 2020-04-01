@@ -8,6 +8,7 @@ You may also find **@Pretend** parameter useful to check what SQL query will be 
 Have fun.
 
 [Installation script for all functions **SQLServer-All.sql** →](../../sql/SQLServer-All.sql)
+[download](https://raw.githubusercontent.com/zoltraks/need-more-space/master/sql/SQLServer-All.sql)
 
 Simple check if scripts are working correctly.
 
@@ -26,6 +27,7 @@ EXEC [DBAtools].dbo.x_SystemVersion
 You may also remove all installed functions by using **SQLServer-Purge.sql** script.
 
 [Script for removing all functions **SQLServer-Purge.sql** →](../../sql/SQLServer-Purge.sql)
+[download](https://raw.githubusercontent.com/zoltraks/need-more-space/master/sql/SQLServer-Purge.sql)
 
 [↑ Up ↑](#microsoft-sql-server)
 
