@@ -43,14 +43,14 @@ SELECT
   SERVERPROPERTY('MachineName') AS Computer
   ,
   SERVERPROPERTY('ServerName') AS Instance
-  , 
+  ,
   SERVERPROPERTY('Collation') AS Collation
 ```
 
 ## Default paths
 
 ```sql
-SELECT 
+SELECT
   DefaultDataPath = SERVERPROPERTY('InstanceDefaultDataPath')
   ,
   DefaultLogPath = SERVERPROPERTY('InstanceDefaultLogPath')
@@ -73,11 +73,11 @@ Or you might choose to follow some of following examples to create **[monitor]**
 
 It is recommended to create separate database catalog like **DBAtools** for utility scripts.
 
-``` 
-CREATE DATABASE [DBAtools] ON PRIMARY 
+```
+CREATE DATABASE [DBAtools] ON PRIMARY
 ( NAME = N'DBAtools', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools.mdf'
 , SIZE = 2048KB , FILEGROWTH = 10240KB )
-LOG ON 
+LOG ON
 ( NAME = N'DBAtools_log', FILENAME = N'C:\DATA\Microsoft SQL Server\DBAtools_log.ldf'
 , SIZE = 1024KB , FILEGROWTH = 10240KB )
 ```
@@ -104,7 +104,7 @@ Enable **Activity Monitor** in **SQL Server Management Studio**.
 GRANT VIEW SERVER STATE TO [monitor]
 ```
 
-Allow trace in **SQL Server Profiler**. 
+Allow trace in **SQL Server Profiler**.
 
 ```sql
 GRANT ALTER TRACE TO [monitor]
@@ -178,7 +178,7 @@ Show index column
 
 Show index columns for tables in database.
 
-``` 
+```
 EXEC x_ShowIndexColumn @Help=1 ;
 ```
 
@@ -193,7 +193,7 @@ EXEC x_ShowIndexColumn @Help=1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-``` 
+```
 EXEC x_ShowIndexColumn @Pretend = 1 ;
 ```
 
@@ -204,11 +204,11 @@ SELECT
     [Clustered] = CASE WHEN i.index_id = 1 THEN 1 ELSE 0 END , [Unique] = i.is_unique , [Primary] = i.is_primary_key
 FROM
     sys.tables t
-INNER JOIN 
+INNER JOIN
     sys.indexes i ON t.object_id = i.object_id
-INNER JOIN 
+INNER JOIN
     sys.index_columns ic ON i.index_id = ic.index_id AND i.object_id = ic.object_id
-INNER JOIN 
+INNER JOIN
     sys.columns c ON ic.column_id = c.column_id AND ic.object_id = c.object_id
 INNER JOIN
     sys.schemas s ON t.schema_id = s.schema_id
@@ -218,7 +218,7 @@ ORDER BY
     s.name , t.name , i.name
 ```
 
-``` 
+```
 EXEC x_ShowIndexColumn ;
 ```
 
@@ -252,18 +252,18 @@ Simply display what database server is doing now.
 
 This procedure has no relevant parameters.
 
-``` 
+```
 EXEC x_OperationStatus ;
 ```
 
 | Database | Command | Status | % | Wait type | Start time | Reads | Writes | Time taken | CPU Time | Time left | Session | Query text |                      
 | -------- | ------- | ------ | - | --------- | ---------- | ----- | ------ | ---------- | -------- | --------- | ------- | ---------- |         
-| master | RESTORE&nbsp; DATABASE | suspended | 5.60 | BACKUPTHREAD | 2019-11-01 09:52:34.973 | 2 | 0 | 00:50 | 00:00 | 14:03 | 87 | RESTORE DATABASE [ExampleTemp] FROM  DISK = N'E:\SQLBackups\Example\Example_backup_2019_10_30_160003_0084574.tlog' WITH  FILE = 2, MOVE N' Example' TO N'E:\Temp\ExampleTemp.mdf', MOVE N' Example_log' TO N'E:\Temp\ExampleTemp_log.ldf', NORECOVERY, NOUNLOAD, REPLACE, STATS = 10 | 
-| master | SELECT | suspended | 0.00 | TRACEWRITE | 2019-11-01 07:40:00.500 | 0 | 0 | 33:25 | 00:00 | 00:00 | 76 | create procedure sys.sp_trace_getdata | (@traceid int, |  @records int = 0 | )asselect * from OpenRowset(TrcData, @traceid, @records) | 
-|  ExampleTemp | UPDATE | suspended | 0.00 | WRITELOG | 2019-11-01 09:53:25.357 | 0 | 0 | 00:00 | 00:00 | 00:00 | 71 | (@data datetime)UPDATE SomeTable SET stamp=@data WHERE id = 229074 | 
-| ExampleTemp | CONDITIONAL | running | 0.00 | NULL | 2019-11-01 10:08:10.717 | 0 | 0 | 00:00 | 00:00 | 00:00 | 97 | IF NOT EXISTS ( SELECT 1 FROM INFORMATION_SCHEMA. COLUMNS WHERE TABLE_NAME = 'ExampleTable' AND COLUMN_NAME = 'MissingColumn' ) | ALTER TABLE [ExampleTable] ADD [MissingColumn] FLOAT NULL... 
-| ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] | 
-| OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... | 
+| master | RESTORE&nbsp;DATABASE | suspended | 5.60 | BACKUPTHREAD | 2019-11-01 09:52:34.973 | 2 | 0 | 00:50 | 00:00 | 14:03 | 87 | RESTORE DATABASE [ExampleTemp] FROM  DISK = N'E:\SQLBackups\Example\Example_backup_2019_10_30_160003_0084574.tlog' WITH  FILE = 2, MOVE N' Example' TO N'E:\Temp\ExampleTemp.mdf', MOVE N' Example_log' TO N'E:\Temp\ExampleTemp_log.ldf', NORECOVERY, NOUNLOAD, REPLACE, STATS = 10 | 
+| master | SELECT | suspended | 0.00 | TRACEWRITE | 2019-11-01 07:40:00.500 | 0 | 0 | 33:25 | 00:00 | 00:00 | 76 | create procedure sys.sp_trace_getdata | (@traceid int, |  @records int = 0 | )asselect * from OpenRowset(TrcData, @traceid, @records) |
+|  ExampleTemp | UPDATE | suspended | 0.00 | WRITELOG | 2019-11-01 09:53:25.357 | 0 | 0 | 00:00 | 00:00 | 00:00 | 71 | (@data datetime)UPDATE SomeTable SET stamp=@data WHERE id = 229074 |
+| ExampleTemp | CONDITIONAL | running | 0.00 | NULL | 2019-11-01 10:08:10.717 | 0 | 0 | 00:00 | 00:00 | 00:00 | 97 | IF NOT EXISTS ( SELECT 1 FROM INFORMATION_SCHEMA. COLUMNS WHERE TABLE_NAME = 'ExampleTable' AND COLUMN_NAME = 'MissingColumn' ) | ALTER TABLE [ExampleTable] ADD [MissingColumn] FLOAT NULL...
+| ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] |
+| OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... |
 
 Identity seed
 ------------------
@@ -292,7 +292,7 @@ Find duplicates
 
 Find duplicates in table.
 
-``` 
+```
 EXEC x_FindDuplicates @Help=1 ;
 ```
 
@@ -306,7 +306,7 @@ EXEC x_FindDuplicates @Help=1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-``` 
+```
 EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'column1 , [Other One] , Col3' , @Pretend = 1 ;
 ```
 
@@ -327,7 +327,7 @@ ORDER BY
 
 You may want to expand your results by showing each duplicate record for further analysis.
 
-``` 
+```
 EXEC x_FindDuplicates @Table = 'MyDb.dbo.MyTable' , @Columns = 'year,day' , @Expand = 'id , stamp' , @Pretend = 1 ;
 ```
 
@@ -364,17 +364,17 @@ File configuration
 
 Show database files configuration.
 
-``` 
+```
 EXEC x_FileConfiguration @Help=1 ;
 ```
 
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
-| @Database | NVARCHAR(257) | Database name | 
+| @Database | NVARCHAR(257) | Database name |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-``` 
+```
 EXEC x_FileConfiguration @Database = 'TempDB' , @Pretend = 1 ;
 ```
 
@@ -403,7 +403,7 @@ FROM
     [TempDB].sys.database_files
 ```
 
-``` 
+```
 EXEC x_FileConfiguration @Database = 'TempDB' ;
 ```
 
@@ -437,7 +437,7 @@ Show basic information about memory amount and state.
 
 This procedure has no relevant parameters.
 
-``` 
+```
 EXEC x_SystemMemory ;
 ```
 
@@ -454,14 +454,14 @@ Show version information.
 
 This procedure has no relevant parameters.
 
-``` 
+```
 EXEC x_SystemVersion ;
 ```
 
 | Name | Value |
 | ---- | ----- |
 | Version | 15.0.2000.5 |
-| Product | Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)   Sep 24 2019 13:48:23   Copyright (C) 2019 Microsoft Corporation  Developer Edition (64-bit) on Windows 10 Pro 10.0 <X64> (Build 18362: ) (Hypervisor) 
+| Product | Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)   Sep 24 2019 13:48:23   Copyright (C) 2019 Microsoft Corporation  Developer Edition (64-bit) on Windows 10 Pro 10.0 <X64> (Build 18362: ) (Hypervisor)
 | Edition | Developer Edition (64-bit) |
 | Level | RTM |
 
@@ -478,7 +478,7 @@ Show default constraint.
 
 This procedure may be used to show default constraints for specific tables and columns.
 
-``` 
+```
 EXEC x_DefaultConstraint @Help=1 ;
 ```
 
@@ -492,7 +492,7 @@ EXEC x_DefaultConstraint @Help=1 ;
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
-``` 
+```
 EXEC x_DefaultConstraint @Database = 'ContactList' , @Column = 'DisplayOrder' ;
 ```
 
@@ -517,7 +517,7 @@ This procedure may optionally create destination table, drop it first, or delete
 
 Will also work with linked servers.
 
-``` 
+```
 EXEC x_CopyData @Help=1 ;
 ```
 
@@ -544,7 +544,7 @@ EXEC x_CopyData @Help=1 ;
 
 Use pretend mode to see what will be done.
 
-``` 
+```
 EXEC x_CopyData @SourceDatabase = 'MyDb' , @SourceTable = 'Table1' , @DestinationDatabase = 'Backup'
   , @Pretend = 1 ;
 ```
@@ -559,7 +559,7 @@ FROM [MyDb].[dbo].[Table1]
 
 This little trick allows to generate CREATE TABLE script only.
 
-``` 
+```
 EXEC x_CopyData @Copy = 0 , @Create = 1 , @SourceTable='Table1' , @SourceDatabase = 'MyDb' , @Pretend = 1;
 ```
 
@@ -576,13 +576,13 @@ CREATE TABLE [MyDb].[dbo].[Table1]
 
 You may also copy data between two servers.
 
-``` 
+```
 EXEC x_CopyData @Pretend = 1 , @Copy = 1 , @Create = 1 , @Drop = 1 , @Delete = 1
     , @SourceDatabase='MyDb' , @SourceTable='Table1'
     , @DestinationServer='LinkedSrv' , @DestinationDatabase='Backup' ;
 ```
 
-``` 
+```
 EXEC (N'
 IF OBJECT_ID(N''[Backup].[dbo].[Table1]'') IS NOT NULL
 DROP TABLE [Backup].[dbo].[Table1]
@@ -644,7 +644,7 @@ Schedule job
 
 Add job and schedule execution plan.
 
-``` 
+```
 EXEC x_ScheduleJob @Help=1 ;
 ```
 
@@ -674,9 +674,9 @@ It will call procedure ``sp_BlitzFirst`` with options directly in specified ``[D
 ```sql
 EXEC x_ScheduleJob @Enable=1 , @Database='DBAtools' , @Name='BlitzFirst' , @Type='Daily' , @Repeat='Minutes' , @Every='15'
 , @Command=N'
-EXEC sp_BlitzFirst 
-  @OutputDatabaseName = ''DBAtools'', 
-  @OutputSchemaName = ''dbo'', 
+EXEC sp_BlitzFirst
+  @OutputDatabaseName = ''DBAtools'',
+  @OutputSchemaName = ''dbo'',
   @OutputTableName = ''BlitzFirst'',
   @OutputTableNameFileStats = ''BlitzFirst_FileStats'',
   @OutputTableNamePerfmonStats = ''BlitzFirst_PerfmonStats'',
@@ -706,9 +706,9 @@ EXEC msdb.dbo.sp_add_jobstep
   @database_name = N'DBAtools' ,
   @subsystem = N'TSQL' ,
   @command = N'
-EXEC sp_BlitzFirst 
-  @OutputDatabaseName = ''DBAtools'', 
-  @OutputSchemaName = ''dbo'', 
+EXEC sp_BlitzFirst
+  @OutputDatabaseName = ''DBAtools'',
+  @OutputSchemaName = ''dbo'',
   @OutputTableName = ''BlitzFirst'',
   @OutputTableNameFileStats = ''BlitzFirst_FileStats'',
   @OutputTableNamePerfmonStats = ''BlitzFirst_PerfmonStats'',
@@ -799,7 +799,7 @@ This function will return description table for wait types which may be handy in
 ```sql
 SELECT [Name] , [Text]
 FROM [DBAtools].dbo.v_WaitType()
-WHERE [Name] LIKE 'ASYNC_%' 
+WHERE [Name] LIKE 'ASYNC_%'
 ORDER BY [Name]
 ```
 
