@@ -648,7 +648,7 @@ Add job and schedule execution plan.
 EXEC x_ScheduleJob @Help=1 ;
 ```
 
-| Parameter | Type | Description |                                                            
+| Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | @Help | BIT | Show this help. |
 | @Pretend | BIT | Print queries to be executed but don't do anything. |
@@ -784,6 +784,59 @@ EXEC msdb.dbo.sp_add_jobserver @job_name = N'Nächste Żółw' ;
 For more informations about possible values of ``@Interval`` or ``@Every`` parameter values read official documentation about **sp_add_schedule** function.
 
 https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-add-schedule-transact-sql
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Split text
+----------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for v_SplitText →](../../sql/SQLServer/v_SplitText.sql)
+
+Split text by any separator of comma, semicolon, or pipe characters.
+
+Values may be quoted using quotation marks, square brackets, apostrophes or grave accents.
+
+Quoted values might be optionally stripped out from surrounding characters.
+
+```sql
+SELECT [Text]
+FROM [DBAtools].dbo.v_SplitText('a, "Hello, World!", ' , DEFAULT , DEFAULT , DEFAULT )
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Text | NVARCHAR(MAX) | Text to split. |
+| @Separators | NVARCHAR(10) | Accepted separator characters. |
+| @Quotes | NVARCHAR(10) | Accepted quotation characters |
+| @Strip | NVARCHAR(128) | Strip quoted values. |
+
+This function can be also used for splitting database object identifiers to parts.  
+
+```sql
+SELECT [Text]
+FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [First table]' , '.' , '[' , 0 )
+```
+
+| Text |
+| --------- |
+| [192.168.0.1\(local)] |
+| [My Catalog] |
+| [dbo] |
+| [First table] |
+
+```sql
+SELECT [Text]
+FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [First table]' , '.' , '[' , 1 )
+```
+
+| Text |
+| --------- |
+| 192.168.0.1\(local) |
+| My Catalog |
+| dbo |
+| First table |
 
 [↑ Up ↑](#microsoft-sql-server)
 
