@@ -662,15 +662,16 @@ EXEC x_CompareData @Help=1 ;
 | @Help | BIT | Show this help. |
 | @Source | NVARCHAR(MAX) | Full path to source table. |
 | @Destination | NVARCHAR(MAX) | Full path to destination table. |
-| @Keys | NVARCHAR(MAX) | Optional list of key columns. If no key column is specified, primary key will be used for checking. |
+| @Keys | NVARCHAR(MAX) | Optional list of key columns. If no key column is specified, identity or primary key will be used. |
 | @Values | NVARCHAR(MAX) | Optional list of value columns. Only these columns will be checked for differences. |
 | @Merge | BIT | Perform required INSERT / DELETE / UPDATE operations to remove differences. |
 | @Select | BIT | Show differences (default). |
 | @Update | BIT | Update destination table to remove differences. |
 | @Insert | BIT | Insert missing records to destination table. |
 | @Delete | BIT | Delete non existing records from destination table. |
-| @OperationAlias | NVARCHAR(128) | Column alias for operation text. |
-| @NullValue | NVARCHAR(128) | Optional text value for NULL setting. |
+| @Alias | NVARCHAR(128) | Column alias for operation text. |
+| @Null | NVARCHAR(128) | Optional text value for NULL setting. |
+| @Quote | BIT | Display values quoted for SQL script. |
 
 Use folowing script to make temporary tables with different values to check this operation behaviour.
 
@@ -756,10 +757,9 @@ Additionaly, you may use ``@Pretend`` to see in messages operation that has to b
 EXEC x_CompareData @Source='Example_1',@Destination='Example_2',@Keys='Name',@Pretend=1
 ```
 
+In pretend mode you can see generated SQL queries that will be used by this procedure.
+
 ```
- 
--- CHECK --
- 
 SELECT 'INSERT' AS [!] , a.[Name] AS [Name] , CONVERT(VARCHAR(10) , a.[Date] , 126) AS [Date] , CONVERT(VARCHAR(11) , a.[Age] , 3) AS [Age] , a.[Alias] AS [Alias]
 FROM Example_1 a
 LEFT JOIN Example_2 b ON a.[Name] = b.[Name]
@@ -774,60 +774,9 @@ SELECT 'UPDATE' AS [!] , a.[Name] AS [Name] , CASE WHEN a.[Date] IS NULL AND b.[
 FROM Example_1 a
 JOIN Example_2 b ON a.[Name] = b.[Name]
 WHERE ( a.[Date] IS NULL AND b.[Date] IS NOT NULL OR a.[Date] IS NOT NULL AND b.[Date] IS NULL OR a.[Date] <> b.[Date] ) OR ( a.[Age] IS NULL AND b.[Age] IS NOT NULL OR a.[Age] IS NOT NULL AND b.[Age] IS NULL OR a.[Age] <> b.[Age] ) OR ( a.[Alias] IS NULL AND b.[Alias] IS NOT NULL OR a.[Alias] IS NOT NULL AND b.[Alias] IS NULL OR a.[Alias] <> b.[Alias] )
- 
--- BUILD --
- 
-DECLARE C CURSOR FOR
-SELECT 'INSERT' AS [!] , a.[Name] AS [Name] , CONVERT(VARCHAR(10) , a.[Date] , 126) AS [Date] , CONVERT(VARCHAR(11) , a.[Age] , 3) AS [Age] , a.[Alias] AS [Alias]
-FROM Example_1 a
-LEFT JOIN Example_2 b ON a.[Name] = b.[Name]
-WHERE b.[Name] IS NULL
-UNION ALL
-SELECT 'DELETE' AS [!] , a.[Name] AS [Name] , CONVERT(VARCHAR(10) , a.[Date] , 126) AS [Date] , CONVERT(VARCHAR(11) , a.[Age] , 3) AS [Age] , a.[Alias] AS [Alias]
-FROM Example_2 a
-LEFT JOIN Example_1 b ON a.[Name] = b.[Name]
-WHERE b.[Name] IS NULL
-UNION ALL
-SELECT 'UPDATE' AS [!] , a.[Name] AS [Name] , CASE WHEN a.[Date] IS NULL AND b.[Date] IS NULL THEN NULL WHEN a.[Date] IS NULL AND b.[Date] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Date] = b.[Date] THEN NULL ELSE CONVERT(VARCHAR(10) , a.[Date] , 126) END AS [Date] , CASE WHEN a.[Age] IS NULL AND b.[Age] IS NULL THEN NULL WHEN a.[Age] IS NULL AND b.[Age] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Age] = b.[Age] THEN NULL ELSE CONVERT(VARCHAR(11) , a.[Age] , 3) END AS [Age] , CASE WHEN a.[Alias] IS NULL AND b.[Alias] IS NULL THEN NULL WHEN a.[Alias] IS NULL AND b.[Alias] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Alias] = b.[Alias] THEN NULL ELSE a.[Alias] END AS [Alias]
-FROM Example_1 a
-JOIN Example_2 b ON a.[Name] = b.[Name]
-WHERE ( a.[Date] IS NULL AND b.[Date] IS NOT NULL OR a.[Date] IS NOT NULL AND b.[Date] IS NULL OR a.[Date] <> b.[Date] ) OR ( a.[Age] IS NULL AND b.[Age] IS NOT NULL OR a.[Age] IS NOT NULL AND b.[Age] IS NULL OR a.[Age] <> b.[Age] ) OR ( a.[Alias] IS NULL AND b.[Alias] IS NOT NULL OR a.[Alias] IS NOT NULL AND b.[Alias] IS NULL OR a.[Alias] <> b.[Alias] )
-;
-DECLARE @Q NVARCHAR(MAX) ;
-DECLARE @T TABLE ( _ NVARCHAR(MAX) ) ;
-DECLARE @0 NVARCHAR(6) ;
-DECLARE @1 NVARCHAR(MAX) ;
-DECLARE @2 NVARCHAR(MAX) ;
-DECLARE @3 NVARCHAR(MAX) ;
-DECLARE @4 NVARCHAR(MAX) ;
-OPEN C ;
-WHILE 1 = 1
-BEGIN
-  FETCH NEXT FROM C INTO @0 , @1 , @2 , @3 , @4 ;
-  IF @@FETCH_STATUS <> 0 BREAK ;
-  IF @0 = 'INSERT'
-  BEGIN
-    SET @Q = 'INSERT INTO Example_2 ( [Name] , [Date] , [Age] , [Alias] ) VALUES ( ' + CASE WHEN @1 IS NULL THEN 'NULL' ELSE 'N''' + @1 + '''' END + ' , ' + CASE WHEN @2 IS NULL THEN 'NULL' ELSE 'N''' + @2 + '''' END + ' , ' + CASE WHEN @3 IS NULL THEN 'NULL' ELSE 'N''' + @3 + '''' END + ' , ' + CASE WHEN @4 IS NULL THEN 'NULL' ELSE 'N''' + @4 + '''' END + ' )' ;
-    INSERT INTO @T VALUES ( @Q ) ;
-  END ;
-  IF @0 = 'DELETE'
-  BEGIN
-    SET @Q = 'DELETE FROM Example_2 WHERE [Name] ' + CASE WHEN @1 IS NULL THEN 'IS NULL' ELSE '= N''' + @1 + '''' END ;
-    INSERT INTO @T VALUES ( @Q ) ;
-  END ;
-  IF @0 = 'UPDATE'
-  BEGIN
-    SET @Q = 'UPDATE Example_2 SET 8<-CUT->8' + CASE WHEN @2 IS NULL THEN '' ELSE ' , [Date] = ' + CASE WHEN @2 = '<?_NULL_?>' THEN 'NULL' ELSE 'N''' + @2 + '''' END END + CASE WHEN @3 IS NULL THEN '' ELSE ' , [Age] = ' + CASE WHEN @3 = '<?_NULL_?>' THEN 'NULL' ELSE 'N''' + @3 + '''' END END + CASE WHEN @4 IS NULL THEN '' ELSE ' , [Alias] = ' + CASE WHEN @4 = '<?_NULL_?>' THEN 'NULL' ELSE 'N''' + @4 + '''' END END + ' WHERE [Name] ' + CASE WHEN @1 IS NULL THEN 'IS NULL' ELSE '= N''' + @1 + '''' END ;
-    SET @Q = REPLACE(@Q , ' SET 8<-CUT->8 , ' , ' SET ') ;
-    INSERT INTO @T VALUES ( @Q ) ;
-  END ;
-END ;
-CLOSE C ;
-DEALLOCATE C ;
-SELECT _ FROM @T ;
 ```
 
-More sophisticaded example using several data types. For testing purposes.
+More sophisticaded example using several data types. Suitable for testing purposes.
 
 ```sql
 IF OBJECT_ID('Example_1' , 'U') IS NOT NULL
@@ -842,7 +791,7 @@ CREATE TABLE Example_1
 (
   [Group] INT NOT NULL ,
   [Position] TINYINT NOT NULL ,
-  [Text_1] NVARCHAR(10) NULL ,
+  [Text_1] NVARCHAR(10) NOT NULL ,
   [Text_2] NTEXT NULL ,
   [Date] DATE NULL ,
   [Time] TIME NULL ,
@@ -864,7 +813,7 @@ CREATE TABLE Example_2
 (
   [Group] INT NOT NULL ,
   [Position] TINYINT NOT NULL ,
-  [Text_1] NVARCHAR(10) NULL ,
+  [Text_1] NVARCHAR(10) NOT NULL ,
   [Text_2] NTEXT NULL ,
   [Date] DATE NULL ,
   [Time] TIME NULL ,
@@ -884,7 +833,7 @@ CREATE TABLE Example_2
 
 INSERT INTO Example_1 
 ( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
-VALUES ( 1 , 1 , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL ) ;
+VALUES ( 1 , 1 , '' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL ) ;
 INSERT INTO Example_1 
 ( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
 VALUES ( 1 , 2 , '[Brackets]', '"Can''t touch this"' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 0x01 ) ;
@@ -893,11 +842,17 @@ INSERT INTO Example_1
 VALUES ( 1 , 3 , N'grün' , N'die Straße' , '2020-01-01' , '00:01:02.12345' , '2020-01-02T00:01:02.123' , '2020-01-02T00:01:02.12345' , '2020-01-02T00:01:02.12345' , '-12345.12345' , '-12345.12345' , '-12345.12345' , '-12345.12345' , NULL ) ;
 INSERT INTO Example_1 
 ( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
-VALUES ( 1 , 4 , N'' , N'Zażółć gęślą jaźń' , '2020-01-02' , '23:59:59.99999' , '2020-02-02T23:59:59.999' , '2020-02-02T23:59:59.99999' , '2020-02-02T23:59:59.99999' , NULL , NULL , NULL , NULL , CONVERT(VARBINARY , N'Ś') ) ;
+VALUES ( 1 , 4 , '' , N'Zażółć gęślą jaźń' , '2020-01-02' , '23:59:59.99999' , '2020-02-02T23:59:59.999' , '2020-02-02T23:59:59.99999' , '2020-02-02T23:59:59.99999' , '0.000000001' , '0.000000001' , '0.000000001' , '0.000000001' , CONVERT(VARBINARY , N'Ś') ) ;
 INSERT INTO Example_1 
 ( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
 VALUES ( 1 , 5 , N'Apă plată' , N'' , '2020-01-03' , '00:00:00.99800994' , '2020-01-02T00:00:00.998' , '2020-01-02T00:00:00.99800994' , '2020-01-02T00:00:00.998009945' , '0' , '0' , '0' , '0' , CONVERT(VARBINARY , N'Ș') ) ;
 
+INSERT INTO Example_2 
+( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
+VALUES ( 2 , 1 , '' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL ) ;
+INSERT INTO Example_2 
+( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
+VALUES ( 1 , 2 , '', '' , NULL , NULL , NULL , NULL , NULL , '0' , '0' , '0' , '0' , 0x02 ) ;
 
 GO
 
@@ -906,11 +861,17 @@ SELECT * FROM Example_2 ;
 
 GO
 
+EXEC x_CompareData @Source='Example_1',@Destination='Example_2',@Keys='group,position',@Pretend=0,@Quote=1,@Merge=0;
+
+GO
+
 DROP TABLE Example_1 ;
 DROP TABLE Example_2 ;
 
 GO
 ```
+
+![](../../media/shot/20_08_26_example_03.png)
 
 [↑ Up ↑](#microsoft-sql-server)
 
