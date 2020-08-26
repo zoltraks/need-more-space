@@ -644,6 +644,15 @@ Compare data
 
 Compare data from one table with another.
 
+This procedure will query database for table structure and select key and value columns for comparisation.
+
+It does basic conversions to ``NVARCHAR`` type for every column so it might not work with custom user types.
+
+If no key column is specified, identity column will be chosen if exists.
+If no key column can be guessed this way, procedure will raise error.
+
+If no value column is specified, procedure will build list of columns used for data comparisation from all possible columns from source table minus key columns used to identify records. Computed columns are not included.
+
 ```sql
 EXEC x_CompareData @Help=1 ;
 ```
@@ -708,6 +717,11 @@ GO
 
 SELECT * FROM Example_1 ;
 SELECT * FROM Example_2 ;
+
+GO
+
+DROP TABLE Example_1 ;
+DROP TABLE Example_2 ;
 
 GO
 ```
@@ -811,6 +825,91 @@ END ;
 CLOSE C ;
 DEALLOCATE C ;
 SELECT _ FROM @T ;
+```
+
+More sophisticaded example using several data types. For testing purposes.
+
+```sql
+IF OBJECT_ID('Example_1' , 'U') IS NOT NULL
+EXEC sp_executesql N'DROP TABLE Example_1' ;
+
+IF OBJECT_ID('Example_2' , 'U') IS NOT NULL
+EXEC sp_executesql N'DROP TABLE Example_2' ;
+
+GO
+
+CREATE TABLE Example_1
+(
+  [Group] INT NOT NULL ,
+  [Position] TINYINT NOT NULL ,
+  [Text_1] NVARCHAR(10) NULL ,
+  [Text_2] NTEXT NULL ,
+  [Date] DATE NULL ,
+  [Time] TIME NULL ,
+  [Stamp_1] DATETIME NULL ,
+  [Stamp_2] DATETIME2(7) NULL ,
+  [Stamp_3] DATETIMEOFFSET NULL ,
+  [Number_1] REAL NULL,
+  [Number_2] FLOAT NULL,
+  [Number_3] DECIMAL(18,6) NULL,
+  [Number_4] MONEY NULL,
+  [Hex] VARBINARY(MAX) NULL ,
+  CONSTRAINT [PK_Example_1_Identity] PRIMARY KEY CLUSTERED
+	(
+		[Group] , [Position]
+	)
+) ;
+
+CREATE TABLE Example_2
+(
+  [Group] INT NOT NULL ,
+  [Position] TINYINT NOT NULL ,
+  [Text_1] NVARCHAR(10) NULL ,
+  [Text_2] NTEXT NULL ,
+  [Date] DATE NULL ,
+  [Time] TIME NULL ,
+  [Stamp_1] DATETIME NULL ,
+  [Stamp_2] DATETIME2(7) NULL ,
+  [Stamp_3] DATETIMEOFFSET NULL ,
+  [Number_1] REAL NULL,
+  [Number_2] FLOAT NULL,
+  [Number_3] DECIMAL(18,6) NULL,
+  [Number_4] MONEY NULL,
+  [Hex] VARBINARY(MAX) NULL ,
+  CONSTRAINT [PK_Example_2_Identity] PRIMARY KEY CLUSTERED
+	(
+		[Group] , [Position]
+	)
+) ;
+
+INSERT INTO Example_1 
+( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
+VALUES ( 1 , 1 , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL ) ;
+INSERT INTO Example_1 
+( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
+VALUES ( 1 , 2 , '[Brackets]', '"Can''t touch this"' , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , NULL , 0x01 ) ;
+INSERT INTO Example_1 
+( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
+VALUES ( 1 , 3 , N'grün' , N'die Straße' , '2020-01-01' , '00:01:02.12345' , '2020-01-02T00:01:02.123' , '2020-01-02T00:01:02.12345' , '2020-01-02T00:01:02.12345' , '-12345.12345' , '-12345.12345' , '-12345.12345' , '-12345.12345' , NULL ) ;
+INSERT INTO Example_1 
+( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
+VALUES ( 1 , 4 , N'' , N'Zażółć gęślą jaźń' , '2020-01-02' , '23:59:59.99999' , '2020-02-02T23:59:59.999' , '2020-02-02T23:59:59.99999' , '2020-02-02T23:59:59.99999' , NULL , NULL , NULL , NULL , CONVERT(VARBINARY , N'Ś') ) ;
+INSERT INTO Example_1 
+( [Group] , [Position] , [Text_1] , [Text_2] , [Date] , [Time] , [Stamp_1] , [Stamp_2] , [Stamp_3] , [Number_1] , [Number_2] , [Number_3] , [Number_4] , [Hex] )
+VALUES ( 1 , 5 , N'Apă plată' , N'' , '2020-01-03' , '00:00:00.99800994' , '2020-01-02T00:00:00.998' , '2020-01-02T00:00:00.99800994' , '2020-01-02T00:00:00.998009945' , '0' , '0' , '0' , '0' , CONVERT(VARBINARY , N'Ș') ) ;
+
+
+GO
+
+SELECT * FROM Example_1 ;
+SELECT * FROM Example_2 ;
+
+GO
+
+DROP TABLE Example_1 ;
+DROP TABLE Example_2 ;
+
+GO
 ```
 
 [↑ Up ↑](#microsoft-sql-server)
