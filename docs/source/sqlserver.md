@@ -179,7 +179,7 @@ Show index column
 Show index columns for tables in database.
 
 ```
-EXEC x_ShowIndexColumn @Help=1 ;
+EXEC x_ShowIndexColumn @Help=1
 ```
 
 | Parameter | Type | Description |                                                            
@@ -194,7 +194,7 @@ EXEC x_ShowIndexColumn @Help=1 ;
 | @Help | BIT | Show this help |
 
 ```
-EXEC x_ShowIndexColumn @Pretend = 1 ;
+EXEC x_ShowIndexColumn @Pretend=1
 ```
 
 ```sql
@@ -219,7 +219,7 @@ ORDER BY
 ```
 
 ```
-EXEC x_ShowIndexColumn ;
+EXEC x_ShowIndexColumn
 ```
 
 | Schema | Table | Index | Column | Clustered | Unique | Primary |
@@ -253,7 +253,7 @@ Simply display what database server is doing now.
 This procedure has no relevant parameters.
 
 ```
-EXEC x_OperationStatus ;
+EXEC x_OperationStatus
 ```
 
 | Database | Command | Status | % | Wait type | Start time | Reads | Writes | Time taken | CPU Time | Time left | Session | Query text |                      
@@ -273,12 +273,12 @@ Show identity seed value for tables in database.
 Generate report for all tables and identity column seed value together
 with DBCC CHECKIDENT ( '[table]' , RESEED , 434342 ) script pattern to recreate it manually.
 
-```sql
-EXEC x_IdentitySeed @Help=1 ;
+```
+EXEC x_IdentitySeed @Help=1
 ```
 
 ```sql
-EXEC x_IdentitySeed @Database = 'DbName' ;
+EXEC x_IdentitySeed @Database='DbName'
 ```
 
 [↑ Up ↑](#microsoft-sql-server)
@@ -293,7 +293,7 @@ Find duplicates
 Find duplicates in table.
 
 ```
-EXEC x_FindDuplicates @Help=1 ;
+EXEC x_FindDuplicates @Help=1
 ```
 
 | Parameter | Type | Description |
@@ -365,7 +365,7 @@ File configuration
 Show database files configuration.
 
 ```
-EXEC x_FileConfiguration @Help=1 ;
+EXEC x_FileConfiguration @Help=1
 ```
 
 | Parameter | Type | Description |
@@ -455,7 +455,7 @@ Show version information.
 This procedure has no relevant parameters.
 
 ```
-EXEC x_SystemVersion ;
+EXEC x_SystemVersion
 ```
 
 | Name | Value |
@@ -479,7 +479,7 @@ Show default constraint.
 This procedure may be used to show default constraints for specific tables and columns.
 
 ```
-EXEC x_DefaultConstraint @Help=1 ;
+EXEC x_DefaultConstraint @Help=1
 ```
 
 | Parameter | Type | Description |
@@ -518,7 +518,7 @@ This procedure may optionally create destination table, drop it first, or delete
 Will also work with linked servers.
 
 ```
-EXEC x_CopyData @Help=1 ;
+EXEC x_CopyData @Help=1
 ```
 
 | Parameter | Type | Description |
@@ -631,6 +631,186 @@ SELECT
   [id] , [ancestor] , [line] , [description]
 FROM [MyDb].[dbo].[Table1]
 WHERE [id] > 123 AND [id] < 567
+```
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Compare data
+------------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for x_CompareData →](../../sql/SQLServer/x_CompareData.sql)
+
+Compare data from one table with another.
+
+```sql
+EXEC x_CompareData @Help=1 ;
+```
+
+| Parameter | Type | Description |                                                            
+| --------- | ---- | ----------- |
+| @Help | BIT | Show this help. |
+| @Source | NVARCHAR(MAX) | Full path to source table. |
+| @Destination | NVARCHAR(MAX) | Full path to destination table. |
+| @Keys | NVARCHAR(MAX) | Optional list of key columns. If no key column is specified, primary key will be used for checking. |
+| @Values | NVARCHAR(MAX) | Optional list of value columns. Only these columns will be checked for differences. |
+| @Merge | BIT | Perform required INSERT / DELETE / UPDATE operations to remove differences. |
+| @Select | BIT | Show differences (default). |
+| @Update | BIT | Update destination table to remove differences. |
+| @Insert | BIT | Insert missing records to destination table. |
+| @Delete | BIT | Delete non existing records from destination table. |
+| @OperationAlias | NVARCHAR(128) | Column alias for operation text. |
+| @NullValue | NVARCHAR(128) | Optional text value for NULL setting. |
+
+Use folowing script to make temporary tables with different values to check this operation behaviour.
+
+```sql
+IF OBJECT_ID('Example_1' , 'U') IS NOT NULL
+EXEC sp_executesql N'DROP TABLE Example_1' ;
+
+IF OBJECT_ID('Example_2' , 'U') IS NOT NULL
+EXEC sp_executesql N'DROP TABLE Example_2' ;
+
+GO
+
+CREATE TABLE Example_1
+(
+  [Name] NVARCHAR(10) NULL ,
+  [Date] DATE NULL ,
+  [Age] INT NULL ,
+  [Alias] NVARCHAR(20) NULL
+) ;
+
+CREATE TABLE Example_2
+(
+  [Name] NVARCHAR(10) NULL ,
+  [Date] DATE NULL ,
+  [Age] INT NULL ,
+  [Alias] NVARCHAR(20) NULL
+) ;
+
+INSERT INTO Example_1 ( [Name] , [Date] , [Age] , [Alias] )
+VALUES ( 'Joe' , '2020-01-01' , 33 , NULL ) ;
+INSERT INTO Example_1 ( [Name] , [Date] , [Age] , [Alias] )
+VALUES ( 'Amy' , '2020-02-02' , 15 , 'A' ) ;
+INSERT INTO Example_1 ( [Name] , [Date] , [Age] , [Alias] )
+VALUES ( 'Bob' , '2020-05-05' , 25 , NULL ) ;
+
+INSERT INTO Example_2 ( [Name] , [Date] , [Age] , [Alias] )
+VALUES ( 'Amy' , '2020-01-03' , 99 , '' ) ;
+INSERT INTO Example_2 ( [Name] , [Date] , [Age] , [Alias] )
+VALUES ( 'Bob' , '2020-03-04' , 99 , 'B' ) ;
+INSERT INTO Example_2 ( [Name] , [Date] , [Age] , [Alias] )
+VALUES ( 'XYZ' , '2020-01-03' , 99 , 'X' ) ;
+
+GO
+
+SELECT * FROM Example_1 ;
+SELECT * FROM Example_2 ;
+
+GO
+```
+
+![](../../media/shot/20_08_26_example_01.png)
+
+```sql
+EXEC x_CompareData @Source='Example_1',@Destination='Example_2',@Keys='Name'
+```
+
+This operation will perform basic comparisation and by default it will output two reports.
+
+One is difference report, second will be list of queries to be executed to remove these differences.
+
+![](../../media/shot/20_08_26_example_02.png)
+
+And here is how it should be read.
+
+First column of difference report is default named exclamation mark ``!`` and states what kind of difference you have. Possible values are ``INSERT``, ``DELETE`` or ``UPDATE``.
+
+First is ``INSERT`` which means that this record was misssing and has to be inserted.
+
+Second is ``DELETE`` because this record exists in destination table but has no appropriate record in source, thus it should be removed.
+
+Last two are differences. If a column has no difference, NULL value will be returned. Because of that, special ``<?_NULL_?>`` text is used to indicate that column should be nullified.
+
+This operation does not make any changes to database unless ``@Merge`` parameter is set to ``1``.
+
+Additionaly, you may use ``@Pretend`` to see in messages operation that has to be made to create these reports.
+
+```
+EXEC x_CompareData @Source='Example_1',@Destination='Example_2',@Keys='Name',@Pretend=1
+```
+
+```
+ 
+-- CHECK --
+ 
+SELECT 'INSERT' AS [!] , a.[Name] AS [Name] , CONVERT(VARCHAR(10) , a.[Date] , 126) AS [Date] , CONVERT(VARCHAR(11) , a.[Age] , 3) AS [Age] , a.[Alias] AS [Alias]
+FROM Example_1 a
+LEFT JOIN Example_2 b ON a.[Name] = b.[Name]
+WHERE b.[Name] IS NULL
+UNION ALL
+SELECT 'DELETE' AS [!] , a.[Name] AS [Name] , CONVERT(VARCHAR(10) , a.[Date] , 126) AS [Date] , CONVERT(VARCHAR(11) , a.[Age] , 3) AS [Age] , a.[Alias] AS [Alias]
+FROM Example_2 a
+LEFT JOIN Example_1 b ON a.[Name] = b.[Name]
+WHERE b.[Name] IS NULL
+UNION ALL
+SELECT 'UPDATE' AS [!] , a.[Name] AS [Name] , CASE WHEN a.[Date] IS NULL AND b.[Date] IS NULL THEN NULL WHEN a.[Date] IS NULL AND b.[Date] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Date] = b.[Date] THEN NULL ELSE CONVERT(VARCHAR(10) , a.[Date] , 126) END AS [Date] , CASE WHEN a.[Age] IS NULL AND b.[Age] IS NULL THEN NULL WHEN a.[Age] IS NULL AND b.[Age] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Age] = b.[Age] THEN NULL ELSE CONVERT(VARCHAR(11) , a.[Age] , 3) END AS [Age] , CASE WHEN a.[Alias] IS NULL AND b.[Alias] IS NULL THEN NULL WHEN a.[Alias] IS NULL AND b.[Alias] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Alias] = b.[Alias] THEN NULL ELSE a.[Alias] END AS [Alias]
+FROM Example_1 a
+JOIN Example_2 b ON a.[Name] = b.[Name]
+WHERE ( a.[Date] IS NULL AND b.[Date] IS NOT NULL OR a.[Date] IS NOT NULL AND b.[Date] IS NULL OR a.[Date] <> b.[Date] ) OR ( a.[Age] IS NULL AND b.[Age] IS NOT NULL OR a.[Age] IS NOT NULL AND b.[Age] IS NULL OR a.[Age] <> b.[Age] ) OR ( a.[Alias] IS NULL AND b.[Alias] IS NOT NULL OR a.[Alias] IS NOT NULL AND b.[Alias] IS NULL OR a.[Alias] <> b.[Alias] )
+ 
+-- BUILD --
+ 
+DECLARE C CURSOR FOR
+SELECT 'INSERT' AS [!] , a.[Name] AS [Name] , CONVERT(VARCHAR(10) , a.[Date] , 126) AS [Date] , CONVERT(VARCHAR(11) , a.[Age] , 3) AS [Age] , a.[Alias] AS [Alias]
+FROM Example_1 a
+LEFT JOIN Example_2 b ON a.[Name] = b.[Name]
+WHERE b.[Name] IS NULL
+UNION ALL
+SELECT 'DELETE' AS [!] , a.[Name] AS [Name] , CONVERT(VARCHAR(10) , a.[Date] , 126) AS [Date] , CONVERT(VARCHAR(11) , a.[Age] , 3) AS [Age] , a.[Alias] AS [Alias]
+FROM Example_2 a
+LEFT JOIN Example_1 b ON a.[Name] = b.[Name]
+WHERE b.[Name] IS NULL
+UNION ALL
+SELECT 'UPDATE' AS [!] , a.[Name] AS [Name] , CASE WHEN a.[Date] IS NULL AND b.[Date] IS NULL THEN NULL WHEN a.[Date] IS NULL AND b.[Date] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Date] = b.[Date] THEN NULL ELSE CONVERT(VARCHAR(10) , a.[Date] , 126) END AS [Date] , CASE WHEN a.[Age] IS NULL AND b.[Age] IS NULL THEN NULL WHEN a.[Age] IS NULL AND b.[Age] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Age] = b.[Age] THEN NULL ELSE CONVERT(VARCHAR(11) , a.[Age] , 3) END AS [Age] , CASE WHEN a.[Alias] IS NULL AND b.[Alias] IS NULL THEN NULL WHEN a.[Alias] IS NULL AND b.[Alias] IS NOT NULL THEN '<?_NULL_?>' WHEN a.[Alias] = b.[Alias] THEN NULL ELSE a.[Alias] END AS [Alias]
+FROM Example_1 a
+JOIN Example_2 b ON a.[Name] = b.[Name]
+WHERE ( a.[Date] IS NULL AND b.[Date] IS NOT NULL OR a.[Date] IS NOT NULL AND b.[Date] IS NULL OR a.[Date] <> b.[Date] ) OR ( a.[Age] IS NULL AND b.[Age] IS NOT NULL OR a.[Age] IS NOT NULL AND b.[Age] IS NULL OR a.[Age] <> b.[Age] ) OR ( a.[Alias] IS NULL AND b.[Alias] IS NOT NULL OR a.[Alias] IS NOT NULL AND b.[Alias] IS NULL OR a.[Alias] <> b.[Alias] )
+;
+DECLARE @Q NVARCHAR(MAX) ;
+DECLARE @T TABLE ( _ NVARCHAR(MAX) ) ;
+DECLARE @0 NVARCHAR(6) ;
+DECLARE @1 NVARCHAR(MAX) ;
+DECLARE @2 NVARCHAR(MAX) ;
+DECLARE @3 NVARCHAR(MAX) ;
+DECLARE @4 NVARCHAR(MAX) ;
+OPEN C ;
+WHILE 1 = 1
+BEGIN
+  FETCH NEXT FROM C INTO @0 , @1 , @2 , @3 , @4 ;
+  IF @@FETCH_STATUS <> 0 BREAK ;
+  IF @0 = 'INSERT'
+  BEGIN
+    SET @Q = 'INSERT INTO Example_2 ( [Name] , [Date] , [Age] , [Alias] ) VALUES ( ' + CASE WHEN @1 IS NULL THEN 'NULL' ELSE 'N''' + @1 + '''' END + ' , ' + CASE WHEN @2 IS NULL THEN 'NULL' ELSE 'N''' + @2 + '''' END + ' , ' + CASE WHEN @3 IS NULL THEN 'NULL' ELSE 'N''' + @3 + '''' END + ' , ' + CASE WHEN @4 IS NULL THEN 'NULL' ELSE 'N''' + @4 + '''' END + ' )' ;
+    INSERT INTO @T VALUES ( @Q ) ;
+  END ;
+  IF @0 = 'DELETE'
+  BEGIN
+    SET @Q = 'DELETE FROM Example_2 WHERE [Name] ' + CASE WHEN @1 IS NULL THEN 'IS NULL' ELSE '= N''' + @1 + '''' END ;
+    INSERT INTO @T VALUES ( @Q ) ;
+  END ;
+  IF @0 = 'UPDATE'
+  BEGIN
+    SET @Q = 'UPDATE Example_2 SET 8<-CUT->8' + CASE WHEN @2 IS NULL THEN '' ELSE ' , [Date] = ' + CASE WHEN @2 = '<?_NULL_?>' THEN 'NULL' ELSE 'N''' + @2 + '''' END END + CASE WHEN @3 IS NULL THEN '' ELSE ' , [Age] = ' + CASE WHEN @3 = '<?_NULL_?>' THEN 'NULL' ELSE 'N''' + @3 + '''' END END + CASE WHEN @4 IS NULL THEN '' ELSE ' , [Alias] = ' + CASE WHEN @4 = '<?_NULL_?>' THEN 'NULL' ELSE 'N''' + @4 + '''' END END + ' WHERE [Name] ' + CASE WHEN @1 IS NULL THEN 'IS NULL' ELSE '= N''' + @1 + '''' END ;
+    SET @Q = REPLACE(@Q , ' SET 8<-CUT->8 , ' , ' SET ') ;
+    INSERT INTO @T VALUES ( @Q ) ;
+  END ;
+END ;
+CLOSE C ;
+DEALLOCATE C ;
+SELECT _ FROM @T ;
 ```
 
 [↑ Up ↑](#microsoft-sql-server)
@@ -816,7 +996,7 @@ This function can be also used for splitting database object identifiers to part
 
 ```sql
 SELECT [Text]
-FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [First table]' , '.' , '[' , 0 )
+FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [First table] | . | [' , 0 )
 ```
 
 | Text |
@@ -828,7 +1008,7 @@ FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [Fi
 
 ```sql
 SELECT [Text]
-FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [First table]' , '.' , '[' , 1 )
+FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [First table] | . | [' , 1 )
 ```
 
 | Text |
@@ -837,6 +1017,22 @@ FROM [DBAtools].dbo.v_SplitText('[192.168.0.1\(local)]. [My Catalog] .[dbo]. [Fi
 | My Catalog |
 | dbo |
 | First table |
+
+Select words in reverse order.
+
+```sql
+SELECT _.[Text] FROM (
+  SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) [Row] , [Text]
+  FROM v_SplitText('a b c',DEFAULT,DEFAULT,DEFAULT)
+) _
+ORDER BY _.[Row] DESC
+```
+
+| Text |
+| --------- |
+| c |
+| b |
+| a |
 
 [↑ Up ↑](#microsoft-sql-server)
 
