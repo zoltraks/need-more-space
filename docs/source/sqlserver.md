@@ -644,6 +644,8 @@ Compare data
 
 Compare data from one table with another.
 
+This procedure depends on function [v_SplitText](#split-text).
+
 This procedure will query database for table structure and select key and value columns for comparisation.
 
 It does basic conversions to ``NVARCHAR`` type for every column so it might not work with custom user types.
