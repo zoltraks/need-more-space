@@ -648,9 +648,10 @@ This procedure depends on function [v_SplitText](#split-text).
 
 This procedure will query database for table structure and select key and value columns for comparisation.
 
-It does basic conversions to ``NVARCHAR`` type for every column so it might not work with custom user types.
+It does basic conversions to ``NVARCHAR`` type for every column so it might not work with custom user types. Will work with standard types like ``CHAR``/``NCHAR``, ``VARCHAR``/``NVARCHAR``,  ``VARBINARY``, ``FLOAT``, ``DATETIME``, ``DATETIME2(n)``, etc.
 
-If no key column is specified, identity column will be chosen if exists.
+If no key column is specified, identity column will be chosen if exists. It might be changed in future to automatically choose primary key columns for comparisation.
+
 If no key column can be guessed this way, procedure will raise error.
 
 If no value column is specified, procedure will build list of columns used for data comparisation from all possible columns from source table minus key columns used to identify records. Computed columns are not included.
@@ -674,6 +675,12 @@ EXEC x_CompareData @Help=1 ;
 | @Alias | NVARCHAR(128) | Column alias for operation text. |
 | @Null | NVARCHAR(128) | Optional text value for NULL setting. |
 | @Quote | BIT | Display values quoted for SQL script. |
+
+```sql
+EXEC x_CompareData @Source='Catalog.dbo.Table_1',@Destination='Catalog.dbo.Table_1',@Pretend=1 ;
+```
+
+Using ``@Pretend`` option will result in printing exact **SQL** to be used without executing it. You might review them in **Messages** tab in ``SSMS``. 
 
 Use folowing script to make temporary tables with different values to check this operation behaviour.
 
@@ -874,6 +881,10 @@ GO
 ```
 
 ![](../../media/shot/20_08_26_example_03.png)
+
+Usually this procedure does not process neither of ``INSERT``/``DELETE``/``UPDATE`` operations. It might however be used that way also when desired by setting ``@Merge`` parameter to ``1``.
+
+When using with ``@Merge`` set to ``1`` you might also consider executing this procedure quietly by also setting ``Select`` parameter to ``0``.
 
 [↑ Up ↑](#microsoft-sql-server)
 
