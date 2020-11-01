@@ -39,6 +39,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | --------- | ----------- |
 | [x_OperationStatus](docs/source/sqlserver.md#operation-status) | Show system operation status. |
 | [x_FileConfiguration](docs/source/sqlserver.md#file-configuration) | Show database files configuration. |
+| [x_FileSpeed](docs/source/sqlserver.md#file-speed) | Show I/O speed of database files. |
 | [x_IdentitySeed](docs/source/sqlserver.md#identity-seed) | Show identity seed value for tables in database. |
 | [x_DefaultContraint](docs/source/sqlserver.md#default-constraint) | Show default contraints. |
 | [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |

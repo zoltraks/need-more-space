@@ -156,6 +156,7 @@ GRANT EXECUTE ON dbo.x_CompareData TO [monitor]
 GRANT EXECUTE ON dbo.x_CopyData TO [monitor]
 GRANT EXECUTE ON dbo.x_DefaultConstraint TO [monitor]
 GRANT EXECUTE ON dbo.x_FileConfiguration TO [monitor]
+GRANT EXECUTE ON dbo.x_FileSpeed TO [monitor]
 GRANT EXECUTE ON dbo.x_FindDuplicates TO [monitor]
 GRANT EXECUTE ON dbo.x_IdentitySeed TO [monitor]
 GRANT EXECUTE ON dbo.x_OperationStatus TO [monitor]
@@ -412,7 +413,7 @@ EXEC x_FileConfiguration @Help=1
 
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
-| @Database | NVARCHAR(257) | Database name |
+| @Database | NVARCHAR(260) | Database name |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
@@ -465,6 +466,125 @@ EXEC x_FileConfiguration @Database = 'TempDB' ;
 | tempdev11 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 12 | DATA | F:\DATABASE\TempDB\tempdev11.mdf |
 | tempdev12 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 13 | DATA | F:\DATABASE\TempDB\tempdev12.mdf |
 | tempdev01 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 14 | DATA | F:\DATABASE\TempDB\tempdev01.mdf |
+
+[↑ Up ↑](#microsoft-sql-server)
+
+File speed
+----------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for x_FileSpeed →](../../sql/SQLServer/x_FileSpeed.sql)
+
+Show I/O speed of database files.
+
+```
+EXEC x_FileSpeed @Help=1
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Database | NVARCHAR(260) | Database name |
+| @Sample | INT | Sample time in seconds. Default is 30 seconds and minimum value is 10 seconds. |
+| @CountPerSecond | BIT | Display total reads and writes per second rather than per minute which is default.|
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```
+EXEC x_FileSpeed @Database = 'TempDB' , @Sample = 90 , @Pretend = 1
+```
+
+```sql
+DECLARE @_t_1 TABLE (
+  [Database] NVARCHAR (128) ,
+  [DatabaseID] INT ,
+  [File] NVARCHAR(260) ,
+  [FileID] INT ,
+  [ReadBytes] BIGINT ,
+  [WriteBytes] BIGINT ,
+  [ReadCount] BIGINT ,
+  [WriteCount] BIGINT ,
+  [TotalWait] BIGINT ,
+  [ReadWait] BIGINT ,
+  [WriteWait] BIGINT
+)
+
+DECLARE @_t_2 TABLE (
+  [Database] NVARCHAR (128) ,
+  [DatabaseID] INT ,
+  [File] NVARCHAR(260) ,
+  [FileID] INT ,
+  [ReadBytes] BIGINT ,
+  [WriteBytes] BIGINT ,
+  [ReadCount] BIGINT ,
+  [WriteCount] BIGINT ,
+  [TotalWait] BIGINT ,
+  [ReadWait] BIGINT ,
+  [WriteWait] BIGINT
+)
+
+INSERT INTO @_t_1
+SELECT     
+    d.[name] AS [Database] ,
+    d.[database_id] AS [DatabaseID] ,
+    f.[physical_name] AS [File] , 
+    f.[file_id] AS [FileID] , 
+    s.[num_of_bytes_read] AS [ReadBytes] , 
+    s.[num_of_bytes_written] AS [WriteBytes] ,
+    s.[num_of_reads] AS [ReadCount] ,
+    s.[num_of_writes] AS [WriteCount] ,
+    s.[io_stall] AS [TotalWait] , 
+    s.[io_stall_read_ms] [ReadWait] ,
+    s.[io_stall_write_ms] [WriteWait]
+FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) AS s
+INNER JOIN sys.master_files f ON s.database_id = f.[database_id] AND s.[file_id] = f.[file_id]
+INNER JOIN sys.databases d ON d.[database_id] = s.[database_id]
+
+WAITFOR DELAY '00:01:30'
+
+INSERT INTO @_t_2
+SELECT     
+    d.[name] AS [Database] ,
+    d.[database_id] AS [DatabaseID] ,
+    f.[physical_name] AS [File] , 
+    f.[file_id] AS [FileID] , 
+    s.[num_of_bytes_read] AS [ReadBytes] , 
+    s.[num_of_bytes_written] AS [WriteBytes] ,
+    s.[num_of_reads] AS [ReadCount] ,
+    s.[num_of_writes] AS [WriteCount] ,
+    s.[io_stall] AS [TotalWait] , 
+    s.[io_stall_read_ms] [ReadWait] ,
+    s.[io_stall_write_ms] [WriteWait]
+FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) AS s
+INNER JOIN sys.master_files f ON s.database_id = f.[database_id] AND s.[file_id] = f.[file_id]
+INNER JOIN sys.databases d ON d.[database_id] = s.[database_id]
+
+SELECT
+    a.[Database] , a.[File]
+    ,
+    CONVERT(DECIMAL(18,2) , 1.5000 * (b.[ReadBytes] - a.[ReadBytes]) / 1024.0) [Read [KB/s]]]
+    , 
+    CONVERT(DECIMAL(18,2) , 1.5000 * (b.[WriteBytes] - a.[WriteBytes]) / 1024.0) [Write [KB/s]]]
+    , 
+    CONVERT(DECIMAL(18,0) , 1.5000 * (b.[ReadCount] - a.[ReadCount]) * 60.0) [Reads [m]]]
+    , 
+    CONVERT(DECIMAL(18,0) , 1.5000 * (b.[WriteCount] - a.[WriteCount]) * 60.0) [Writes [m]]]
+    ,
+    CONVERT(DECIMAL(18,1) , 1.5000 * (b.[TotalWait] - a.[TotalWait]) / 1000.0) [Total wait]
+    ,
+    CONVERT(DECIMAL(18,1) , 1.5000 * (b.[ReadWait] - a.[ReadWait]) / 1000.0) [Read wait]
+    ,
+    CONVERT(DECIMAL(18,1) , 1.5000 * (b.[WriteWait] - a.[WriteWait]) / 1000.0) [Write wait]
+    , 
+    f.[type_desc] [Type] , f.[state_desc] [State]
+    ,
+    CONVERT(BIGINT , 0.125 * f.[size]) [Size [KB]]]
+FROM sys.master_files f
+JOIN @_t_1 a ON f.[database_id] = a.[DatabaseID] AND f.[file_id] = a.[FileID]
+JOIN @_t_2 b ON f.[database_id] = b.[DatabaseID] AND f.[file_id] = b.[FileID]
+```
+
+![](../../media/shot/20_11_01_speed_01.png)
 
 [↑ Up ↑](#microsoft-sql-server)
 
