@@ -496,7 +496,8 @@ EXEC x_FileSpeed @Help=1
 | --------- | ---- | ----------- |
 | @Database | NVARCHAR(260) | Database name |
 | @Sample | INT | Sample time in seconds. Default is 30 seconds and minimum value is 10 seconds. |
-| @CountPerSecond | BIT | Display total reads and writes per second rather than per minute which is default.|
+| @CountPerSecond | BIT | Display total reads and writes per second rather than per minute which is default. |
+| @ActivityOnly | BIT | Exclude rows where there is no activity. |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
