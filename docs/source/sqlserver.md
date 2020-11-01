@@ -85,7 +85,7 @@ LOG ON
 ### User ###
 
 ```sql
-CREATE LOGIN [monitor] WITH PASSWORD=N'SecretPassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+CREATE LOGIN [monitor] WITH PASSWORD=N'Secret@123' , DEFAULT_DATABASE=[master] , CHECK_EXPIRATION=OFF , CHECK_POLICY=OFF
 ```
 
 ```sql
@@ -95,7 +95,7 @@ CREATE USER [monitor] FOR LOGIN [monitor]
 To change password for existing user use this example.
 
 ```sql
-ALTER LOGIN [monitor] WITH PASSWORD=N'Secret123'
+ALTER LOGIN [monitor] WITH PASSWORD=N'Secret@321'
 ```
 
 Enable **Activity Monitor** in **SQL Server Management Studio**.
@@ -137,7 +137,9 @@ Unsafe, but if you still need, here you have a template.
 USE [DBAtools]
 GO
 CREATE USER [monitor] FOR LOGIN [monitor]
+GO
 ALTER ROLE [db_owner] ADD MEMBER [monitor]
+GO
 ```
 
 ### Access ###
@@ -145,16 +147,23 @@ ALTER ROLE [db_owner] ADD MEMBER [monitor]
 Additional execution permissions may be needed for users.
 
 ```sql
-GRANT EXECUTE ON [DBAtools].dbo.x_CopyData TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_DefaultConstraint TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_FileConfiguration TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_FindDuplicates TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_IdentitySeed TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_OperationStatus TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_ShowIndex TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_ShowIndexColumn TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_SystemMemory TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_SystemVersion TO [monitor]
+USE [DBAtools]
+GO
+GRANT SELECT ON dbo.v_WaitType TO [monitor]
+GRANT SELECT ON dbo.v_SplitText TO [monitor]
+GO
+GRANT EXECUTE ON dbo.x_CompareData TO [monitor]
+GRANT EXECUTE ON dbo.x_CopyData TO [monitor]
+GRANT EXECUTE ON dbo.x_DefaultConstraint TO [monitor]
+GRANT EXECUTE ON dbo.x_FileConfiguration TO [monitor]
+GRANT EXECUTE ON dbo.x_FindDuplicates TO [monitor]
+GRANT EXECUTE ON dbo.x_IdentitySeed TO [monitor]
+GRANT EXECUTE ON dbo.x_OperationStatus TO [monitor]
+GRANT EXECUTE ON dbo.x_ScheduleJob TO [monitor]
+GRANT EXECUTE ON dbo.x_ShowIndex TO [monitor]
+GRANT EXECUTE ON dbo.x_SystemMemory TO [monitor]
+GRANT EXECUTE ON dbo.x_SystemVersion TO [monitor]
+GO
 ```
 
 ```sql
@@ -169,17 +178,17 @@ EXEC dbo.x_SystemVersion
 
 [↑ Up ↑](#microsoft-sql-server)
 
-Show index column
------------------
+Show index
+----------
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_ShowIndexColumn →](../../sql/SQLServer/x_ShowIndexColumn.sql)
+[Installation script for x_ShowIndex →](../../sql/SQLServer/x_ShowIndex.sql)
 
-Show index columns for tables in database.
+Show indexes and optionally columns included for one or more tables.
 
 ```
-EXEC x_ShowIndexColumn @Help=1
+EXEC x_ShowIndex @Help=1
 ```
 
 | Parameter | Type | Description |                                                            
@@ -187,14 +196,15 @@ EXEC x_ShowIndexColumn @Help=1
 | @Database | NVARCHAR(128) | Database name |
 | @Schema | NVARCHAR(128) | Schema name |
 | @Table | NVARCHAR(128) | Table name |
-| @Clustered | BIT | Show only clustered or nonclustered indexes |
-| @Unique | BIT | Show only unique or nonunique indexes |
-| @Primary | BIT | Show only primary or nonprimary indexes |
+| @Expand | BIT | Show index columns |
+| @Clustered | BIT | Show clustered (1) or non-clustered (0) indexes |
+| @Unique | BIT | Show unique (1) or non-unique (0) indexes |
+| @Primary | BIT | Show primary (1) or non-primary (0) indexes |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
 ```
-EXEC x_ShowIndexColumn @Pretend=1
+EXEC x_ShowIndex @Pretend=1
 ```
 
 ```sql
@@ -219,7 +229,39 @@ ORDER BY
 ```
 
 ```
-EXEC x_ShowIndexColumn
+EXEC x_ShowIndex @Database='Sales',@Schema='Customers',@Expand=1,@Pretend=1
+```
+
+```sql
+USE [Sales]
+SELECT
+    [Schema] = s.name , [Table] = t.name , [Index] = i.name , [Column] = c.name
+    ,
+    [Clustered] = CASE WHEN i.index_id = 1 THEN 1 ELSE 0 END
+    ,
+    [Unique] = i.is_unique
+    ,
+    [Primary] = i.is_primary_key
+FROM
+    sys.tables t
+INNER JOIN 
+    sys.indexes i ON t.object_id = i.object_id
+INNER JOIN
+    sys.schemas s ON t.schema_id = s.schema_id
+INNER JOIN 
+    sys.index_columns ic ON i.index_id = ic.index_id AND i.object_id = ic.object_id
+INNER JOIN 
+    sys.columns c ON ic.column_id = c.column_id AND ic.object_id = c.object_id
+WHERE
+    i.name IS NOT NULL
+AND
+    s.name = N'Customers'
+ORDER BY
+    s.name , t.name , i.name
+```
+
+```
+EXEC x_ShowIndex
 ```
 
 | Schema | Table | Index | Column | Clustered | Unique | Primary |

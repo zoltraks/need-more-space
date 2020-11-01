@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+2020-11-01
+----------
+
+Changed **SqlServer** procedure **x_ShowIndex** for displaying index information to optionally include column names and removed **x_ShowIndexColumn** as it became obsolete.
+
 2020-08-26
 ----------
 
