@@ -502,7 +502,7 @@ EXEC x_FileSpeed @Help=1
 | @Help | BIT | Show this help |
 
 ```
-EXEC x_FileSpeed @Database = 'TempDB' , @Sample = 90 , @Pretend = 1
+EXEC x_FileSpeed @Database = 'TempDB' , @Sample = 90 , @ActivityOnly = 1 ,  @Pretend = 1
 ```
 
 ```sql
@@ -536,18 +536,18 @@ DECLARE @_t_2 TABLE (
 
 INSERT INTO @_t_1
 SELECT     
-    d.[name] AS [Database] ,
-    d.[database_id] AS [DatabaseID] ,
-    f.[physical_name] AS [File] , 
-    f.[file_id] AS [FileID] , 
-    s.[num_of_bytes_read] AS [ReadBytes] , 
-    s.[num_of_bytes_written] AS [WriteBytes] ,
-    s.[num_of_reads] AS [ReadCount] ,
-    s.[num_of_writes] AS [WriteCount] ,
-    s.[io_stall] AS [TotalWait] , 
+    d.[name] [Database] ,
+    d.[database_id] [DatabaseID] ,
+    f.[physical_name] [File] , 
+    f.[file_id] [FileID] , 
+    s.[num_of_bytes_read] [ReadBytes] , 
+    s.[num_of_bytes_written] [WriteBytes] ,
+    s.[num_of_reads] [ReadCount] ,
+    s.[num_of_writes] [WriteCount] ,
+    s.[io_stall] [TotalWait] , 
     s.[io_stall_read_ms] [ReadWait] ,
     s.[io_stall_write_ms] [WriteWait]
-FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) AS s
+FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) s
 INNER JOIN sys.master_files f ON s.database_id = f.[database_id] AND s.[file_id] = f.[file_id]
 INNER JOIN sys.databases d ON d.[database_id] = s.[database_id]
 
@@ -555,47 +555,55 @@ WAITFOR DELAY '00:01:30'
 
 INSERT INTO @_t_2
 SELECT     
-    d.[name] AS [Database] ,
-    d.[database_id] AS [DatabaseID] ,
-    f.[physical_name] AS [File] , 
-    f.[file_id] AS [FileID] , 
-    s.[num_of_bytes_read] AS [ReadBytes] , 
-    s.[num_of_bytes_written] AS [WriteBytes] ,
-    s.[num_of_reads] AS [ReadCount] ,
-    s.[num_of_writes] AS [WriteCount] ,
-    s.[io_stall] AS [TotalWait] , 
+    d.[name] [Database] ,
+    d.[database_id] [DatabaseID] ,
+    f.[physical_name] [File] , 
+    f.[file_id] [FileID] , 
+    s.[num_of_bytes_read] [ReadBytes] , 
+    s.[num_of_bytes_written] [WriteBytes] ,
+    s.[num_of_reads] [ReadCount] ,
+    s.[num_of_writes] [WriteCount] ,
+    s.[io_stall] [TotalWait] , 
     s.[io_stall_read_ms] [ReadWait] ,
     s.[io_stall_write_ms] [WriteWait]
-FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) AS s
+FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) s
 INNER JOIN sys.master_files f ON s.database_id = f.[database_id] AND s.[file_id] = f.[file_id]
 INNER JOIN sys.databases d ON d.[database_id] = s.[database_id]
 
 SELECT
     a.[Database] , a.[File]
     ,
-    CONVERT(DECIMAL(18,2) , 1.5000 * (b.[ReadBytes] - a.[ReadBytes]) / 1024.0) [Read [KB/s]]]
+    CONVERT(DECIMAL(18,2) , (b.[ReadBytes] - a.[ReadBytes]) / 1024.0 / 90.0) [Read [KB/s]]]
     , 
-    CONVERT(DECIMAL(18,2) , 1.5000 * (b.[WriteBytes] - a.[WriteBytes]) / 1024.0) [Write [KB/s]]]
+    CONVERT(DECIMAL(18,2) , (b.[WriteBytes] - a.[WriteBytes]) / 1024.0 / 90.0) [Write [KB/s]]]
     , 
-    CONVERT(DECIMAL(18,0) , 1.5000 * (b.[ReadCount] - a.[ReadCount]) * 60.0) [Reads [m]]]
+    CONVERT(DECIMAL(18,0) , CEILING((b.[ReadCount] - a.[ReadCount]) / 60.0 / 90.0)) [Reads [m]]]
     , 
-    CONVERT(DECIMAL(18,0) , 1.5000 * (b.[WriteCount] - a.[WriteCount]) * 60.0) [Writes [m]]]
+    CONVERT(DECIMAL(18,0) , CEILING((b.[WriteCount] - a.[WriteCount]) / 60.0 / 90.0)) [Writes [m]]]
     ,
-    CONVERT(DECIMAL(18,1) , 1.5000 * (b.[TotalWait] - a.[TotalWait]) / 1000.0) [Total wait]
+    CONVERT(DECIMAL(18,1) , (b.[TotalWait] - a.[TotalWait]) / 1000.0 / 90.0) [Total wait]
     ,
-    CONVERT(DECIMAL(18,1) , 1.5000 * (b.[ReadWait] - a.[ReadWait]) / 1000.0) [Read wait]
+    CONVERT(DECIMAL(18,1) , (b.[ReadWait] - a.[ReadWait]) / 1000.0 / 90.0) [Read wait]
     ,
-    CONVERT(DECIMAL(18,1) , 1.5000 * (b.[WriteWait] - a.[WriteWait]) / 1000.0) [Write wait]
+    CONVERT(DECIMAL(18,1) , (b.[WriteWait] - a.[WriteWait]) / 1000.0 / 90.0) [Write wait]
     , 
     f.[type_desc] [Type] , f.[state_desc] [State]
     ,
-    CONVERT(BIGINT , 0.125 * f.[size]) [Size [KB]]]
+    CONVERT(DECIMAL(18,1) , 8.0 * f.[size] / 1024.0) [Size [MB]]]
 FROM sys.master_files f
 JOIN @_t_1 a ON f.[database_id] = a.[DatabaseID] AND f.[file_id] = a.[FileID]
 JOIN @_t_2 b ON f.[database_id] = b.[DatabaseID] AND f.[file_id] = b.[FileID]
+WHERE 
+    b.[ReadBytes] - a.[ReadBytes] > 0 OR
+    b.[WriteBytes] - a.[WriteBytes] > 0 OR
+    b.[ReadCount] - a.[ReadCount] > 0 OR
+    b.[WriteCount] - a.[WriteCount] > 0 OR
+    b.[TotalWait] - a.[TotalWait] > 50 OR
+    b.[ReadWait] - a.[ReadWait] > 50 OR
+    b.[WriteWait] - a.[WriteWait] > 50
 ```
 
-![](../../media/shot/20_11_01_speed_01.png)
+![](../../media/shot/20_11_01_speed_02.png)
 
 [↑ Up ↑](#microsoft-sql-server)
 
