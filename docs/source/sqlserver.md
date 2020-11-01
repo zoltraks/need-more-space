@@ -511,6 +511,7 @@ DECLARE @_t_1 TABLE (
   [DatabaseID] INT ,
   [File] NVARCHAR(260) ,
   [FileID] INT ,
+  [Sample] BIGINT ,
   [ReadBytes] BIGINT ,
   [WriteBytes] BIGINT ,
   [ReadCount] BIGINT ,
@@ -525,6 +526,7 @@ DECLARE @_t_2 TABLE (
   [DatabaseID] INT ,
   [File] NVARCHAR(260) ,
   [FileID] INT ,
+  [Sample] BIGINT ,
   [ReadBytes] BIGINT ,
   [WriteBytes] BIGINT ,
   [ReadCount] BIGINT ,
@@ -538,13 +540,14 @@ INSERT INTO @_t_1
 SELECT     
     d.[name] [Database] ,
     d.[database_id] [DatabaseID] ,
-    f.[physical_name] [File] , 
-    f.[file_id] [FileID] , 
-    s.[num_of_bytes_read] [ReadBytes] , 
+    f.[physical_name] [File] ,
+    f.[file_id] [FileID] ,
+    s.[sample_ms] [Sample] ,
+    s.[num_of_bytes_read] [ReadBytes] ,
     s.[num_of_bytes_written] [WriteBytes] ,
     s.[num_of_reads] [ReadCount] ,
     s.[num_of_writes] [WriteCount] ,
-    s.[io_stall] [TotalWait] , 
+    s.[io_stall] [TotalWait] ,
     s.[io_stall_read_ms] [ReadWait] ,
     s.[io_stall_write_ms] [WriteWait]
 FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) s
@@ -559,6 +562,7 @@ SELECT
     d.[database_id] [DatabaseID] ,
     f.[physical_name] [File] , 
     f.[file_id] [FileID] , 
+    s.[sample_ms] [Sample] ,
     s.[num_of_bytes_read] [ReadBytes] , 
     s.[num_of_bytes_written] [WriteBytes] ,
     s.[num_of_reads] [ReadCount] ,
@@ -573,19 +577,19 @@ INNER JOIN sys.databases d ON d.[database_id] = s.[database_id]
 SELECT
     a.[Database] , a.[File]
     ,
-    CONVERT(DECIMAL(18,2) , (b.[ReadBytes] - a.[ReadBytes]) / 1024.0 / 90.0) [Read [KB/s]]]
+    CONVERT(DECIMAL(18,2) , (b.[ReadBytes] - a.[ReadBytes]) / 1024.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Read [KB/s]]]
     , 
-    CONVERT(DECIMAL(18,2) , (b.[WriteBytes] - a.[WriteBytes]) / 1024.0 / 90.0) [Write [KB/s]]]
+    CONVERT(DECIMAL(18,2) , (b.[WriteBytes] - a.[WriteBytes]) / 1024.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Write [KB/s]]]
     , 
-    CONVERT(DECIMAL(18,0) , CEILING((b.[ReadCount] - a.[ReadCount]) / 60.0 / 90.0)) [Reads [m]]]
+    CONVERT(DECIMAL(18,0) , CEILING((b.[ReadCount] - a.[ReadCount]) / 60.0 / ((b.[Sample] - a.[Sample]) / 1000.0))) [Reads [m]]]
     , 
-    CONVERT(DECIMAL(18,0) , CEILING((b.[WriteCount] - a.[WriteCount]) / 60.0 / 90.0)) [Writes [m]]]
+    CONVERT(DECIMAL(18,0) , CEILING((b.[WriteCount] - a.[WriteCount]) / 60.0 / ((b.[Sample] - a.[Sample]) / 1000.0))) [Writes [m]]]
     ,
-    CONVERT(DECIMAL(18,1) , (b.[TotalWait] - a.[TotalWait]) / 1000.0 / 90.0) [Total wait]
+    CONVERT(DECIMAL(18,1) , (b.[TotalWait] - a.[TotalWait]) / 1000.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Total wait]
     ,
-    CONVERT(DECIMAL(18,1) , (b.[ReadWait] - a.[ReadWait]) / 1000.0 / 90.0) [Read wait]
+    CONVERT(DECIMAL(18,1) , (b.[ReadWait] - a.[ReadWait]) / 1000.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Read wait]
     ,
-    CONVERT(DECIMAL(18,1) , (b.[WriteWait] - a.[WriteWait]) / 1000.0 / 90.0) [Write wait]
+    CONVERT(DECIMAL(18,1) , (b.[WriteWait] - a.[WriteWait]) / 1000.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Write wait]
     , 
     f.[type_desc] [Type] , f.[state_desc] [State]
     ,
