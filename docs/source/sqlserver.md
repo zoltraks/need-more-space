@@ -110,6 +110,12 @@ Allow trace in **SQL Server Profiler**.
 GRANT ALTER TRACE TO [monitor]
 ```
 
+Allow to read object definitions.
+
+```sql
+GRANT VIEW ANY DEFINITION TO [monitor]
+```
+
 Enable advanced monitoring usage.
 
 ```sql
@@ -477,6 +483,10 @@ File speed
 [Installation script for x_FileSpeed →](../../sql/SQLServer/x_FileSpeed.sql)
 
 Show I/O speed of database files.
+
+Please note that user has to be able to read ``sys.master_files``.
+
+select * from sys.master_files
 
 ```
 EXEC x_FileSpeed @Help=1
