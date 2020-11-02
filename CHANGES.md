@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+2020-11-01
+----------
+
+Changed **SqlServer** procedure **x_ShowIndex** for displaying index information to optionally include column names and removed **x_ShowIndexColumn** as it became obsolete.
+
+Added new procedure for **SqlServer** for showing I/O bottlenecks **x_FileSpeed**.
+
 2020-08-26
 ----------
 

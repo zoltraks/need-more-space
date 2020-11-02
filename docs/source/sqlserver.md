@@ -85,7 +85,7 @@ LOG ON
 ### User ###
 
 ```sql
-CREATE LOGIN [monitor] WITH PASSWORD=N'SecretPassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+CREATE LOGIN [monitor] WITH PASSWORD=N'Secret@123' , DEFAULT_DATABASE=[master] , CHECK_EXPIRATION=OFF , CHECK_POLICY=OFF
 ```
 
 ```sql
@@ -95,7 +95,7 @@ CREATE USER [monitor] FOR LOGIN [monitor]
 To change password for existing user use this example.
 
 ```sql
-ALTER LOGIN [monitor] WITH PASSWORD=N'Secret123'
+ALTER LOGIN [monitor] WITH PASSWORD=N'Secret@321'
 ```
 
 Enable **Activity Monitor** in **SQL Server Management Studio**.
@@ -108,6 +108,12 @@ Allow trace in **SQL Server Profiler**.
 
 ```sql
 GRANT ALTER TRACE TO [monitor]
+```
+
+Allow to read object definitions.
+
+```sql
+GRANT VIEW ANY DEFINITION TO [monitor]
 ```
 
 Enable advanced monitoring usage.
@@ -137,7 +143,9 @@ Unsafe, but if you still need, here you have a template.
 USE [DBAtools]
 GO
 CREATE USER [monitor] FOR LOGIN [monitor]
+GO
 ALTER ROLE [db_owner] ADD MEMBER [monitor]
+GO
 ```
 
 ### Access ###
@@ -145,16 +153,24 @@ ALTER ROLE [db_owner] ADD MEMBER [monitor]
 Additional execution permissions may be needed for users.
 
 ```sql
-GRANT EXECUTE ON [DBAtools].dbo.x_CopyData TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_DefaultConstraint TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_FileConfiguration TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_FindDuplicates TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_IdentitySeed TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_OperationStatus TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_ShowIndex TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_ShowIndexColumn TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_SystemMemory TO [monitor]
-GRANT EXECUTE ON [DBAtools].dbo.x_SystemVersion TO [monitor]
+USE [DBAtools]
+GO
+GRANT SELECT ON dbo.v_WaitType TO [monitor]
+GRANT SELECT ON dbo.v_SplitText TO [monitor]
+GO
+GRANT EXECUTE ON dbo.x_CompareData TO [monitor]
+GRANT EXECUTE ON dbo.x_CopyData TO [monitor]
+GRANT EXECUTE ON dbo.x_DefaultConstraint TO [monitor]
+GRANT EXECUTE ON dbo.x_FileConfiguration TO [monitor]
+GRANT EXECUTE ON dbo.x_FileSpeed TO [monitor]
+GRANT EXECUTE ON dbo.x_FindDuplicates TO [monitor]
+GRANT EXECUTE ON dbo.x_IdentitySeed TO [monitor]
+GRANT EXECUTE ON dbo.x_OperationStatus TO [monitor]
+GRANT EXECUTE ON dbo.x_ScheduleJob TO [monitor]
+GRANT EXECUTE ON dbo.x_ShowIndex TO [monitor]
+GRANT EXECUTE ON dbo.x_SystemMemory TO [monitor]
+GRANT EXECUTE ON dbo.x_SystemVersion TO [monitor]
+GO
 ```
 
 ```sql
@@ -169,17 +185,17 @@ EXEC dbo.x_SystemVersion
 
 [↑ Up ↑](#microsoft-sql-server)
 
-Show index column
------------------
+Show index
+----------
 
 [↑ Up ↑](#microsoft-sql-server)
 
-[Installation script for x_ShowIndexColumn →](../../sql/SQLServer/x_ShowIndexColumn.sql)
+[Installation script for x_ShowIndex →](../../sql/SQLServer/x_ShowIndex.sql)
 
-Show index columns for tables in database.
+Show indexes and optionally columns included for one or more tables.
 
 ```
-EXEC x_ShowIndexColumn @Help=1
+EXEC x_ShowIndex @Help=1
 ```
 
 | Parameter | Type | Description |                                                            
@@ -187,14 +203,15 @@ EXEC x_ShowIndexColumn @Help=1
 | @Database | NVARCHAR(128) | Database name |
 | @Schema | NVARCHAR(128) | Schema name |
 | @Table | NVARCHAR(128) | Table name |
-| @Clustered | BIT | Show only clustered or nonclustered indexes |
-| @Unique | BIT | Show only unique or nonunique indexes |
-| @Primary | BIT | Show only primary or nonprimary indexes |
+| @Expand | BIT | Show index columns |
+| @Clustered | BIT | Show clustered (1) or non-clustered (0) indexes |
+| @Unique | BIT | Show unique (1) or non-unique (0) indexes |
+| @Primary | BIT | Show primary (1) or non-primary (0) indexes |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
 ```
-EXEC x_ShowIndexColumn @Pretend=1
+EXEC x_ShowIndex @Pretend=1
 ```
 
 ```sql
@@ -219,7 +236,39 @@ ORDER BY
 ```
 
 ```
-EXEC x_ShowIndexColumn
+EXEC x_ShowIndex @Database='Sales',@Schema='Customers',@Expand=1,@Pretend=1
+```
+
+```sql
+USE [Sales]
+SELECT
+    [Schema] = s.name , [Table] = t.name , [Index] = i.name , [Column] = c.name
+    ,
+    [Clustered] = CASE WHEN i.index_id = 1 THEN 1 ELSE 0 END
+    ,
+    [Unique] = i.is_unique
+    ,
+    [Primary] = i.is_primary_key
+FROM
+    sys.tables t
+INNER JOIN 
+    sys.indexes i ON t.object_id = i.object_id
+INNER JOIN
+    sys.schemas s ON t.schema_id = s.schema_id
+INNER JOIN 
+    sys.index_columns ic ON i.index_id = ic.index_id AND i.object_id = ic.object_id
+INNER JOIN 
+    sys.columns c ON ic.column_id = c.column_id AND ic.object_id = c.object_id
+WHERE
+    i.name IS NOT NULL
+AND
+    s.name = N'Customers'
+ORDER BY
+    s.name , t.name , i.name
+```
+
+```
+EXEC x_ShowIndex
 ```
 
 | Schema | Table | Index | Column | Clustered | Unique | Primary |
@@ -370,7 +419,7 @@ EXEC x_FileConfiguration @Help=1
 
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
-| @Database | NVARCHAR(257) | Database name |
+| @Database | NVARCHAR(260) | Database name |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
@@ -423,6 +472,142 @@ EXEC x_FileConfiguration @Database = 'TempDB' ;
 | tempdev11 | 1268 | UNLIMITED | 10 | 0 | ONLINE | -1 | 12 | DATA | F:\DATABASE\TempDB\tempdev11.mdf |
 | tempdev12 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 13 | DATA | F:\DATABASE\TempDB\tempdev12.mdf |
 | tempdev01 | 1278 | UNLIMITED | 10 | 0 | ONLINE | -1 | 14 | DATA | F:\DATABASE\TempDB\tempdev01.mdf |
+
+[↑ Up ↑](#microsoft-sql-server)
+
+File speed
+----------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for x_FileSpeed →](../../sql/SQLServer/x_FileSpeed.sql)
+
+Show I/O speed of database files.
+
+Please note that user has to be able to read ``sys.master_files``.
+
+select * from sys.master_files
+
+```
+EXEC x_FileSpeed @Help=1
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Database | NVARCHAR(260) | Database name |
+| @Sample | INT | Sample time in seconds. Default is 30 seconds and minimum value is 10 seconds. |
+| @CountPerSecond | BIT | Display total reads and writes per second rather than per minute which is default. |
+| @ActivityOnly | BIT | Exclude rows where there is no activity. |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```
+EXEC x_FileSpeed @Database = 'TempDB' , @Sample = 90 , @ActivityOnly = 1 ,  @Pretend = 1
+```
+
+```sql
+DECLARE @_t_1 TABLE (
+  [Database] NVARCHAR (128) ,
+  [DatabaseID] INT ,
+  [File] NVARCHAR(260) ,
+  [FileID] INT ,
+  [Sample] BIGINT ,
+  [ReadBytes] BIGINT ,
+  [WriteBytes] BIGINT ,
+  [ReadCount] BIGINT ,
+  [WriteCount] BIGINT ,
+  [TotalWait] BIGINT ,
+  [ReadWait] BIGINT ,
+  [WriteWait] BIGINT
+)
+
+DECLARE @_t_2 TABLE (
+  [Database] NVARCHAR (128) ,
+  [DatabaseID] INT ,
+  [File] NVARCHAR(260) ,
+  [FileID] INT ,
+  [Sample] BIGINT ,
+  [ReadBytes] BIGINT ,
+  [WriteBytes] BIGINT ,
+  [ReadCount] BIGINT ,
+  [WriteCount] BIGINT ,
+  [TotalWait] BIGINT ,
+  [ReadWait] BIGINT ,
+  [WriteWait] BIGINT
+)
+
+INSERT INTO @_t_1
+SELECT     
+    d.[name] [Database] ,
+    d.[database_id] [DatabaseID] ,
+    f.[physical_name] [File] ,
+    f.[file_id] [FileID] ,
+    s.[sample_ms] [Sample] ,
+    s.[num_of_bytes_read] [ReadBytes] ,
+    s.[num_of_bytes_written] [WriteBytes] ,
+    s.[num_of_reads] [ReadCount] ,
+    s.[num_of_writes] [WriteCount] ,
+    s.[io_stall] [TotalWait] ,
+    s.[io_stall_read_ms] [ReadWait] ,
+    s.[io_stall_write_ms] [WriteWait]
+FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) s
+INNER JOIN sys.master_files f ON s.database_id = f.[database_id] AND s.[file_id] = f.[file_id]
+INNER JOIN sys.databases d ON d.[database_id] = s.[database_id]
+
+WAITFOR DELAY '00:01:30'
+
+INSERT INTO @_t_2
+SELECT     
+    d.[name] [Database] ,
+    d.[database_id] [DatabaseID] ,
+    f.[physical_name] [File] , 
+    f.[file_id] [FileID] , 
+    s.[sample_ms] [Sample] ,
+    s.[num_of_bytes_read] [ReadBytes] , 
+    s.[num_of_bytes_written] [WriteBytes] ,
+    s.[num_of_reads] [ReadCount] ,
+    s.[num_of_writes] [WriteCount] ,
+    s.[io_stall] [TotalWait] , 
+    s.[io_stall_read_ms] [ReadWait] ,
+    s.[io_stall_write_ms] [WriteWait]
+FROM sys.dm_io_virtual_file_stats(DB_ID(N'TempDB') , DEFAULT) s
+INNER JOIN sys.master_files f ON s.database_id = f.[database_id] AND s.[file_id] = f.[file_id]
+INNER JOIN sys.databases d ON d.[database_id] = s.[database_id]
+
+SELECT
+    a.[Database] , a.[File]
+    ,
+    CONVERT(DECIMAL(18,2) , (b.[ReadBytes] - a.[ReadBytes]) / 1024.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Read [KB/s]]]
+    , 
+    CONVERT(DECIMAL(18,2) , (b.[WriteBytes] - a.[WriteBytes]) / 1024.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Write [KB/s]]]
+    , 
+    CONVERT(DECIMAL(18,0) , CEILING((b.[ReadCount] - a.[ReadCount]) / 60.0 / ((b.[Sample] - a.[Sample]) / 1000.0))) [Reads [m]]]
+    , 
+    CONVERT(DECIMAL(18,0) , CEILING((b.[WriteCount] - a.[WriteCount]) / 60.0 / ((b.[Sample] - a.[Sample]) / 1000.0))) [Writes [m]]]
+    ,
+    CONVERT(DECIMAL(18,1) , (b.[TotalWait] - a.[TotalWait]) / 1000.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Total wait]
+    ,
+    CONVERT(DECIMAL(18,1) , (b.[ReadWait] - a.[ReadWait]) / 1000.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Read wait]
+    ,
+    CONVERT(DECIMAL(18,1) , (b.[WriteWait] - a.[WriteWait]) / 1000.0 / ((b.[Sample] - a.[Sample]) / 1000.0)) [Write wait]
+    , 
+    f.[type_desc] [Type] , f.[state_desc] [State]
+    ,
+    CONVERT(DECIMAL(18,1) , 8.0 * f.[size] / 1024.0) [Size [MB]]]
+FROM sys.master_files f
+JOIN @_t_1 a ON f.[database_id] = a.[DatabaseID] AND f.[file_id] = a.[FileID]
+JOIN @_t_2 b ON f.[database_id] = b.[DatabaseID] AND f.[file_id] = b.[FileID]
+WHERE 
+    b.[ReadBytes] - a.[ReadBytes] > 0 OR
+    b.[WriteBytes] - a.[WriteBytes] > 0 OR
+    b.[ReadCount] - a.[ReadCount] > 0 OR
+    b.[WriteCount] - a.[WriteCount] > 0 OR
+    b.[TotalWait] - a.[TotalWait] > 50 OR
+    b.[ReadWait] - a.[ReadWait] > 50 OR
+    b.[WriteWait] - a.[WriteWait] > 50
+```
+
+![](../../media/shot/20_11_01_speed_02.png)
 
 [↑ Up ↑](#microsoft-sql-server)
 
