@@ -498,6 +498,8 @@ EXEC x_FileSpeed @Help=1
 | @Sample | INT | Sample time in seconds. Default is 30 seconds and minimum value is 10 seconds. |
 | @CountPerSecond | BIT | Display total reads and writes per second rather than per minute which is default. |
 | @ActivityOnly | BIT | Exclude rows where there is no activity. |
+| @Output | NVARCHAR(260) | If this parameter is supplied, results will be inserted to destination table instead of displaying result. Destination table will be created if not exists. |
+| @Retain | INT | Number of days to keep data in destination table. Default is 7 days after which data will be deleted after execution. When set to 0 or negative value, no data will be deleted. |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
@@ -605,6 +607,63 @@ WHERE
     b.[TotalWait] - a.[TotalWait] > 50 OR
     b.[ReadWait] - a.[ReadWait] > 50 OR
     b.[WriteWait] - a.[WriteWait] > 50
+```
+
+Alternatively you may want to save results of this procedure to destination table for history.
+
+Use ``@Output`` parameter to store data in a table.
+
+```
+EXEC x_FileSpeed @Output=N'[DBAtools].[dbo].[FileSpeed]' , @Pretend=1
+```
+
+```sql
+IF ( SELECT OBJECT_ID(N'DBAtools.dbo.FileSpeed' , 'U') ) IS NULL
+CREATE TABLE DBAtools.dbo.FileSpeed
+(
+  [Time] DATETIMEOFFSET CONSTRAINT DF_FileSpeed_Time DEFAULT GETDATE() NOT NULL ,
+  [Database] NVARCHAR (128) NOT NULL ,
+  [File] NVARCHAR(260) NOT NULL ,
+  [Read speed] DECIMAL(9,2) NOT NULL ,
+  [Write speed] DECIMAL(9,2) NOT NULL ,
+  [Read count] INT NOT NULL ,
+  [Write count] INT NOT NULL ,
+  [Total wait] DECIMAL(9,1) NOT NULL ,
+  [Read wait] DECIMAL(9,1) NOT NULL ,
+  [Write wait] DECIMAL(9,1) NOT NULL ,
+  [Type] NVARCHAR(10) NOT NULL ,
+  [State] NVARCHAR(16) NOT NULL ,
+  [Size] DECIMAL(18,1) NOT NULL ,
+  CONSTRAINT PK_FileSpeed PRIMARY KEY CLUSTERED ( [Time] , [Database] , [File] )
+) ;
+
+INSERT INTO [DBAtools].[dbo].[FileSpeed]
+( [Database] , [File] , [Read speed] , [Write speed] , [Read count] , [Write count] , [Total wait] , [Read wait] , [Write wait] , [Type] , [State] , [Size] )
+EXEC [DBAtools].[dbo].[x_FileSpeed] ;
+
+DELETE FROM DBAtools.dbo.FileSpeed
+WHERE [Time] < CONVERT(DATETIMEOFFSET , DATEADD(DAY , -7 , CONVERT(DATE , GETDATE()))) ;
+```
+
+In addition ``@Retain`` parameter may be used to change number of days after which data should be deleted from destination table.
+
+### Job ###
+
+Usually you would create a job for executing this command like every 15 minutes. This need SQL Server Agent running which is not always accessible, for example when using Express Edition of SQL Server. In that case you may want to setup external job script which will execute that command for you.
+
+``/opt/mssql-jobs/mssql-need-more-space.sh``
+
+```
+#/bin/sh
+/opt/mssql-tools/bin/sqlcmd -S . -U sa -P YourSecretPassword -Q "EXEC DBAtools.dbo.x_FileSpeed @Output=N'DBAtools.dbo.FileSpeed'" > /dev/null
+```
+
+Then you can use crontab to set this job to run quarterly. Use ``crontab -e`` command instead of editing this file.
+
+``/etc/crontab``
+
+```
+*/15 * * * * /opt/mssql-jobs/mssql-need-more-space.sh
 ```
 
 ![](../../media/shot/20_11_01_speed_02.png)
