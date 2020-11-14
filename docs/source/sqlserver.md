@@ -314,6 +314,39 @@ EXEC x_OperationStatus
 | ExampleTemp | ALTER TABLE | running | 0.00 | NULL | 2019-11-01 10:08:12.067 | 713075 | 1884865 | 02:16 | 01:46 | 00:00 | 97 | UPDATE [ExampleTemp].[dbo].[ExampleTable] SET [CounterColumn] = [CounterColumn] |
 | OtherDb | CONDITIONAL | suspended | 0.00 | PAGEIOLATCH_SH | 2019-11-01 10:16:00.437 | 47445 | 0 | 00:14 | 00:00 | 00:00 | 97 | IF EXISTS ( SELECT TOP 1 1 FROM [a_batch] WHERE [stamp] IS NULL ) UPDATE [a_batch] SET [stamp] = GETDATE()... |
 
+It might be handy to use this procedure together with ``v_WaitType`` function to get wait type description.
+
+```sql
+DECLARE @Report TABLE
+(
+    [Database] NVARCHAR(260) ,
+    [Command] NVARCHAR(50) ,
+    [Status] NVARCHAR(50) ,
+    [%] DECIMAL(9,2) ,
+    [Wait type] NVARCHAR(50) ,
+    [Start time] DATETIME2(3) ,
+    [Reads] BIGINT ,
+    [Writes] BIGINT ,
+    [Time taken] NVARCHAR(10) ,
+    [CPU time] NVARCHAR(10) ,
+    [Time left] NVARCHAR(10) ,
+    [Session] BIGINT ,
+    [Operation] NVARCHAR(MAX)
+) ;
+INSERT INTO @Report
+EXEC x_OperationStatus ;
+SELECT 
+  R.[Database] , R.[Command] ,R.[Status] , R.[%] , R.[Wait type] 
+  ,
+  W.[Text] [Wait description] , R.[Start time] , R.[Reads] , R.[Writes]
+  ,
+  [Time taken] , R.[CPU time] , R.[Time left] , R.[Session] , R.[Operation]
+FROM @Report R
+LEFT JOIN v_WaitType() W ON W.[Name] = R.[Wait type] ;
+```
+
+![](../../media/shot/20_11_15_operation_status_wait.png)
+
 Identity seed
 ------------------
 
