@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+2020-11-05
+----------
+
+Added options ``@Output`` and ``@Retain`` to give ability of saving results of **x_FileSpeed* to output table for further reporting.
+
 2020-11-01
 ----------
 
