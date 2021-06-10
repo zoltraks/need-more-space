@@ -910,6 +910,27 @@ FROM [MyDb].[dbo].[Table1]
 WHERE [id] > 123 AND [id] < 567
 ```
 
+This procedure can be also used to create table structure without copying any data.
+
+When using ``@Pretend=1`` parameter execution will result in just printing table creation script.
+
+```sql
+EXEC x_CopyData @Copy=0,@Create=1,@Pretend=1,@SourceDatabase='Cartoon',@SourceTable='Hero'
+```
+
+```
+IF OBJECT_ID(N'[Cartoon].[dbo].[Hero]') IS NULL
+CREATE TABLE [Cartoon].[dbo].[Hero]
+(
+  [HERO_ID] INT NOT NULL ,
+  [FIRST_NAME] NVARCHAR(50) NOT NULL ,
+  [LAST_NAME] NVARCHAR(50) NOT NULL ,
+  [APPEARED] DATE NULL ,
+  [FOUNDER] NVARCHAR(50) NOT NULL ,
+  [IS_ACTIVE] BIT NOT NULL
+)
+```
+
 [↑ Up ↑](#microsoft-sql-server)
 
 Compare data
