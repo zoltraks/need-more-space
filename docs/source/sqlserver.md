@@ -164,6 +164,7 @@ GRANT EXECUTE ON dbo.x_DefaultConstraint TO [monitor]
 GRANT EXECUTE ON dbo.x_FileConfiguration TO [monitor]
 GRANT EXECUTE ON dbo.x_FileSpeed TO [monitor]
 GRANT EXECUTE ON dbo.x_FindDuplicates TO [monitor]
+GRANT EXECUTE ON dbo.x_FindQuery TO [monitor]
 GRANT EXECUTE ON dbo.x_IdentitySeed TO [monitor]
 GRANT EXECUTE ON dbo.x_OperationStatus TO [monitor]
 GRANT EXECUTE ON dbo.x_ScheduleJob TO [monitor]
@@ -434,6 +435,54 @@ LEFT JOIN
 ORDER BY
     __X__.[year] , __X__.[day] , __Y__.[id] , __Y__.[stamp]
 ```
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Find query
+----------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for x_FindQuery →](../../sql/SQLServer/x_FindQuery.sql)
+
+Find specific query in Query Store.
+
+This procedure might be handy when searching for specific query to track it.
+
+```
+EXEC x_FindQuery @Help=1
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Database | NVARCHAR(128) | Database name |
+| @Like | NVARCHAR(MAX) | Query text filter for LIKE |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```
+EXEC x_FindQuery @Database = 'DBAtools' , @Like = 'SELECT%' , @Pretend = 1 ;
+```
+
+```sql
+USE [DBAtools]
+
+SELECT 
+  q.query_id , q.last_execution_time , t.query_sql_text
+FROM sys.query_store_query q
+INNER JOIN sys.query_store_query_text t
+  ON q.query_text_id = t.query_text_id
+WHERE
+  t.query_sql_text LIKE N'SELECT%'
+```
+
+Executing procedure will result with list of queries found in Query Store.
+
+```
+EXEC x_FindQuery @Like = 'SELECT%' ;
+```
+
+![](../../media/shot/21_09_19_findquery.png)
 
 [↑ Up ↑](#microsoft-sql-server)
 

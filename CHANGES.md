@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+2021-09-19
+----------
+
+Added new procedure for **SqlServer** for searching Query Store **x_FindQuery**.
+
 2020-11-05
 ----------
 
