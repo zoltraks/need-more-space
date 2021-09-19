@@ -151,13 +151,18 @@ GO
 ### Access ###
 
 Additional execution permissions may be needed for users.
+In this example, permissions will be granted for ``monitor``.
 
 ```sql
 USE [DBAtools]
-GO
+```
+
+```sql
 GRANT SELECT ON dbo.v_WaitType TO [monitor]
 GRANT SELECT ON dbo.v_SplitText TO [monitor]
-GO
+```
+
+```sql
 GRANT EXECUTE ON dbo.x_CompareData TO [monitor]
 GRANT EXECUTE ON dbo.x_CopyData TO [monitor]
 GRANT EXECUTE ON dbo.x_DefaultConstraint TO [monitor]
@@ -171,11 +176,6 @@ GRANT EXECUTE ON dbo.x_ScheduleJob TO [monitor]
 GRANT EXECUTE ON dbo.x_ShowIndex TO [monitor]
 GRANT EXECUTE ON dbo.x_SystemMemory TO [monitor]
 GRANT EXECUTE ON dbo.x_SystemVersion TO [monitor]
-GO
-```
-
-```sql
-GRANT SELECT ON [DBAtools].dbo.v_WaitType TO [monitor]
 ```
 
 ### Check ###
