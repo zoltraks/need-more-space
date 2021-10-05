@@ -54,6 +54,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | [x_SystemVersion](docs/source/sqlserver.md#system-version) | Show version information. |
 | [x_ScheduleJob](docs/source/sqlserver.md#schedule-job) | Add job and schedule execution plan. |
 | [x_ShowIndex](docs/source/sqlserver.md#show-index) | Show indexes and optionally columns included for one or more tables. |
+| [x_SessionStatus](docs/source/sqlserver.md#session-status) | Show current active sessions with information about state and transaction isolation level. |
 
 </div>
 
