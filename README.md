@@ -41,20 +41,20 @@ Designed to be used by administrators and developers for doing maintenance or ot
 
 | Procedure | Description |
 | --------- | ----------- |
-| [x_OperationStatus](docs/source/sqlserver.md#operation-status) | Show system operation status. |
-| [x_FileConfiguration](docs/source/sqlserver.md#file-configuration) | Show database files configuration. |
-| [x_FileSpeed](docs/source/sqlserver.md#file-speed) | Show I/O speed of database files. |
-| [x_IdentitySeed](docs/source/sqlserver.md#identity-seed) | Show identity seed value for tables in database. |
-| [x_DefaultContraint](docs/source/sqlserver.md#default-constraint) | Show default contraints. |
-| [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |
-| [x_FindQuery](docs/source/sqlserver.md#find-query) | Find specific query in Query Store. |
 | [x_CompareData](docs/source/sqlserver.md#compare-data) | Compare data from one table with another. |
 | [x_CopyData](docs/source/sqlserver.md#copy-data) | Copy data from one table to another. |
+| [x_DefaultContraint](docs/source/sqlserver.md#default-constraint) | Show default contraints. |
+| [x_FileConfiguration](docs/source/sqlserver.md#file-configuration) | Show database files configuration. |
+| [x_FileSpeed](docs/source/sqlserver.md#file-speed) | Show I/O speed of database files. |
+| [x_FindDuplicates](docs/source/sqlserver.md#find-duplicates) | Find duplicates in table. |
+| [x_FindQuery](docs/source/sqlserver.md#find-query) | Find specific query in Query Store. |
+| [x_IdentitySeed](docs/source/sqlserver.md#identity-seed) | Show identity seed value for tables in database. |
+| [x_OperationStatus](docs/source/sqlserver.md#operation-status) | Show system operation status. |
+| [x_ScheduleJob](docs/source/sqlserver.md#schedule-job) | Add job and schedule execution plan. |
+| [x_SessionStatus](docs/source/sqlserver.md#session-status) | Show current active sessions with information about state and transaction isolation level. |
+| [x_ShowIndex](docs/source/sqlserver.md#show-index) | Show indexes and optionally columns included for one or more tables. |
 | [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
 | [x_SystemVersion](docs/source/sqlserver.md#system-version) | Show version information. |
-| [x_ScheduleJob](docs/source/sqlserver.md#schedule-job) | Add job and schedule execution plan. |
-| [x_ShowIndex](docs/source/sqlserver.md#show-index) | Show indexes and optionally columns included for one or more tables. |
-| [x_SessionStatus](docs/source/sqlserver.md#session-status) | Show current active sessions with information about state and transaction isolation level. |
 
 </div>
 

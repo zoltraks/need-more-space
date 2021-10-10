@@ -1,10 +1,15 @@
 CHANGES
 =======
 
+2021-10-10
+----------
+
+Added new **SqlServer** procedure for checking current active sessions state and transaction isolation level.
+
 2021-09-19
 ----------
 
-Added new procedure for **SqlServer** for searching Query Store **x_FindQuery**.
+Added new **SqlServer** procedure for searching Query Store **x_FindQuery**.
 
 2020-11-05
 ----------

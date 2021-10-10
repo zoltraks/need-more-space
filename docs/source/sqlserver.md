@@ -158,8 +158,8 @@ USE [DBAtools]
 ```
 
 ```sql
-GRANT SELECT ON dbo.v_WaitType TO [monitor]
 GRANT SELECT ON dbo.v_SplitText TO [monitor]
+GRANT SELECT ON dbo.v_WaitType TO [monitor]
 ```
 
 ```sql
@@ -173,6 +173,7 @@ GRANT EXECUTE ON dbo.x_FindQuery TO [monitor]
 GRANT EXECUTE ON dbo.x_IdentitySeed TO [monitor]
 GRANT EXECUTE ON dbo.x_OperationStatus TO [monitor]
 GRANT EXECUTE ON dbo.x_ScheduleJob TO [monitor]
+GRANT EXECUTE ON dbo.x_SessionStatus TO [monitor]
 GRANT EXECUTE ON dbo.x_ShowIndex TO [monitor]
 GRANT EXECUTE ON dbo.x_SystemMemory TO [monitor]
 GRANT EXECUTE ON dbo.x_SystemVersion TO [monitor]
@@ -300,7 +301,15 @@ Show system operation status.
 
 Simply display what database server is doing now.
 
-This procedure has no relevant parameters.
+```
+EXEC x_OperationStatus @Help=1
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Now | BIT | Include column with current date and time |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
 
 ```
 EXEC x_OperationStatus
@@ -347,6 +356,8 @@ LEFT JOIN v_WaitType() W ON W.[Name] = R.[Wait type] ;
 ```
 
 ![](../../media/shot/20_11_15_operation_status_wait.png)
+
+[↑ Up ↑](#microsoft-sql-server)
 
 Identity seed
 ------------------
@@ -582,6 +593,7 @@ EXEC x_FileSpeed @Help=1
 | @ActivityOnly | BIT | Exclude rows where there is no activity. |
 | @Output | NVARCHAR(260) | If this parameter is supplied, results will be inserted to destination table instead of displaying result. Destination table will be created if not exists. |
 | @Retain | INT | Number of days to keep data in destination table. Default is 7 days after which data will be deleted after execution. When set to 0 or negative value, no data will be deleted. |
+| @Now | BIT | Include column with current date and time |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 
@@ -1160,9 +1172,9 @@ CREATE TABLE Example_1
   [Number_4] MONEY NULL,
   [Hex] VARBINARY(MAX) NULL ,
   CONSTRAINT [PK_Example_1_Identity] PRIMARY KEY CLUSTERED
-	(
-		[Group] , [Position]
-	)
+ | (
+ |  | [Group] , [Position]
+ | )
 ) ;
 
 CREATE TABLE Example_2
@@ -1182,9 +1194,9 @@ CREATE TABLE Example_2
   [Number_4] MONEY NULL,
   [Hex] VARBINARY(MAX) NULL ,
   CONSTRAINT [PK_Example_2_Identity] PRIMARY KEY CLUSTERED
-	(
-		[Group] , [Position]
-	)
+ | (
+ |  | [Group] , [Position]
+ | )
 ) ;
 
 INSERT INTO Example_1 
@@ -1384,6 +1396,38 @@ EXEC msdb.dbo.sp_add_jobserver @job_name = N'Nächste Żółw' ;
 For more informations about possible values of ``@Interval`` or ``@Every`` parameter values read official documentation about **sp_add_schedule** function.
 
 https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-add-schedule-transact-sql
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Session status
+--------------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for x_SessionStatus →](../../sql/SQLServer/x_SessionStatus.sql)
+
+Show current active sessions with information about state and transaction isolation level.
+
+```
+EXEC x_SessionStatus @Help=1
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @Database | NVARCHAR(128) | Database name |
+| @Host | NVARCHAR(128) | Filter results by host. Set to ``'+'`` to include only remote sessions. Set to ``'-'`` to include only local sessions. |
+| @Now | BIT | Include column with current date and time |
+| @Pretend | BIT | Print query to be executed but don't do anything |
+| @Help | BIT | Show this help |
+
+```
+EXEC x_SessionStatus
+```
+
+| SESSION | STATUS | DATABASE | HOST | ISOLATION |
+| ------- | ------ | -------- | ---- | --------- |
+| 11	| SLEEPING	| master	| NULL	| READ COMMITTED |
+| 82	| SLEEPING	| tempdb	| 172.168.1.70	| READ UNCOMMIITTED |
 
 [↑ Up ↑](#microsoft-sql-server)
 
