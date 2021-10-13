@@ -466,8 +466,11 @@ EXEC x_FindQuery @Help=1
 
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
-| @Database | NVARCHAR(128) | Database name |
 | @Like | NVARCHAR(MAX) | Query text filter for LIKE |
+| @Database | NVARCHAR(128) | Database name |
+| @Group | BIT | Group queries to show unique entries only |
+| @Top | SMALLINT | Limit report to maximum number of top records |
+| @Now | BIT | Include column with current date and time |
 | @Pretend | BIT | Print query to be executed but don't do anything |
 | @Help | BIT | Show this help |
 

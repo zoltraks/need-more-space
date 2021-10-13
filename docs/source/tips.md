@@ -1,6 +1,22 @@
 Tips
 ====
 
+Clean cache
+-----------
+
+[↑ Up ↑](#tips)
+
+```sql
+CHECKPOINT ;
+DBCC DROPCLEANBUFFERS WITH NO_INFOMSGS ;
+DBCC FREEPROCCACHE WITH NO_INFOMSGS ;
+DBCC FREESYSTEMCACHE ('ALL') WITH MARK_IN_USE_FOR_REMOVAL , NO_INFOMSGS ;
+DBCC FREESESSIONCACHE WITH NO_INFOMSGS ;
+CHECKPOINT ;
+```
+
+[↑ Up ↑](#tips)
+
 Object names
 ------------
 
