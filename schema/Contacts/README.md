@@ -1,5 +1,5 @@
 Contacts Database
-=====================
+=================
 
 This is sample database for the contact list.
 
