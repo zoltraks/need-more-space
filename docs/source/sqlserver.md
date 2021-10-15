@@ -1434,6 +1434,66 @@ EXEC x_SessionStatus
 
 [↑ Up ↑](#microsoft-sql-server)
 
+Column type
+-----------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for v_ColumnType →](../../sql/SQLServer/v_ColumnType.sql)
+
+Script definition for data type.
+
+Parameters are related to columns of ``INFORMATION_SCHEMA``.
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| @DataType | VARCHAR(20) | ``DATA_TYPE`` |
+| @MaximumLength | INT | ``CHARACTER_MAXIMUM_LENGTH`` |
+| @NumericPrecision | INT | ``NUMERIC_PRECISION`` |
+| @NumericScale | INT | ``NUMERIC_SCALE`` |
+| @DateTimePrecision | INT | ``DATETIME_PRECISION`` |
+
+ - Default column length for CHAR / VARCHAR / NCHAR / NVARCHAR is "1"
+ 
+ - Default column length for TIME / DATETIME2 / DATETIMEOFFSET is "7"
+ 
+ - Default column length for DECIMAL / NUMERIC is "18"
+ 
+ - Default numeric scale for DECIMAL / NUMERIC is "0"
+ 
+ - Following types can't specify column length: BIT / INT / SMALLINT / TINYINT / BIGINT / DATETIME / SMALLDATETIME / TIMESTAMP / REAL / TEXT / NTEXT / MONEY / SMALLMONEY / IMAGE / UNIQUEIDENTIFIER / SYSNAME / XML / SQL_VARIANT / HIERARCHYID / GEOMETRY / GEOGRAPHY
+ 
+ - Collation is used only in CHAR / VARCHAR / TEXT / NCHAR / NVARCHAR / NTEXT
+ 
+ - Type SYSNAME is just an alias for NVARCHAR(128) NOT NULL
+ 
+ - Default and only allowed numeric scale for FLOAT is "53"
+ 
+ - Default and only allowed numeric scale for REAL is "24"
+ 
+ - There are only two approximate numerics types FLOAT with numeric precision "53" and REAL with numeric precision "24"
+
+```sql
+SELECT
+  C.COLUMN_NAME
+  ,
+  dbo.v_ColumnType(C.DATA_TYPE , C.CHARACTER_MAXIMUM_LENGTH , C.NUMERIC_PRECISION , C.NUMERIC_SCALE , C.DATETIME_PRECISION )
+    AS TYPE_TEXT
+FROM Cartoon.INFORMATION_SCHEMA.COLUMNS C
+WHERE C.TABLE_NAME = 'HERO'
+```
+
+| COLUMN_NAME | TYPE_TEXT |
+|-|-|
+| HERO_ID | INT |
+| FIRST_NAME | NVARCHAR(50) |
+| LAST_NAME | NVARCHAR(50) |
+| APPEARED | DATE |
+| FOUNDER	| NVARCHAR(50) |
+| IS_ACTIVE | BIT |
+
+[↑ Up ↑](#microsoft-sql-server)
+
 Split text
 ----------
 

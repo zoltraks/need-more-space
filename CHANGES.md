@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+2021-10-15
+----------
+
+Added new **SqlServer** function for making script definition for data types **v_ColumnType**.
+
 2021-10-10
 ----------
 
