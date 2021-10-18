@@ -53,6 +53,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | [x_ScheduleJob](docs/source/sqlserver.md#schedule-job) | Add job and schedule execution plan. |
 | [x_SessionStatus](docs/source/sqlserver.md#session-status) | Show current active sessions with information about state and transaction isolation level. |
 | [x_ShowIndex](docs/source/sqlserver.md#show-index) | Show indexes and optionally columns included for one or more tables. |
+| [x_SystemConfiguration](docs/source/sqlserver.md#system-configuration) | Show system configuration. |
 | [x_SystemMemory](docs/source/sqlserver.md#system-memory) | Show basic information about memory amount and state. |
 | [x_SystemVersion](docs/source/sqlserver.md#system-version) | Show version information. |
 
@@ -65,7 +66,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | [v_ColumnType](docs/source/sqlserver.md#column-type) | Script definition for data type. |
 | [v_SplitText](docs/source/sqlserver.md#split-text) | Split text to table. |
 | [v_VersionList](docs/source/sqlserver.md#version-list) | Return table of version update information. |
-| [v_WaitType](docs/source/sqlserver.md#wait-types) | Return table of wait type descriptions. |
+| [v_WaitType](docs/source/sqlserver.md#wait-type) | Return table of wait type descriptions. |
 
 </div>
 

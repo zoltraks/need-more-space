@@ -31,15 +31,10 @@ You may also remove all installed functions by using **SQLServer-Purge.sql** scr
 
 [↑ Up ↑](#microsoft-sql-server)
 
-Maintenance Tips
-----------------
-
-[↑ Up ↑](#microsoft-sql-server)
-
 ## Basic configuration
 
 ```sql
-SELECT  
+SELECT
   SERVERPROPERTY('MachineName') AS Computer
   ,
   SERVERPROPERTY('ServerName') AS Instance
@@ -786,6 +781,47 @@ EXEC x_SystemMemory ;
 | -------------------- | --------------------- | -------------------- | ------------------------ | ----------------- | ---------------- | ------------ |
 | 65535 | 5795 | 131069 | 70972 | 1435 | 56484 | Available physical memory is high |
 
+[↑ Up ↑](#microsoft-sql-server)
+
+System configuration
+--------------------
+
+[Installation script for x_SystemConfiguration →](../../sql/SQLServer/x_SystemConfiguration.sql)
+
+Show system configuration.
+
+```
+EXEC x_SystemConfiguration
+```
+
+| name | value | is_value_default |
+| - | - | - |
+| ACCELERATED_PLAN_FORCING | 1 | 1 |
+| BATCH_MODE_ADAPTIVE_JOINS | 1 | 1 |
+| BATCH_MODE_MEMORY_GRANT_FEEDBACK | 1 | 1 |
+| BATCH_MODE_ON_ROWSTORE | 1 | 1 |
+| DEFERRED_COMPILATION_TV | 1 | 1 |
+| ELEVATE_ONLINE | OFF | 1 |
+| ELEVATE_RESUMABLE | OFF | 1 |
+| GLOBAL_TEMPORARY_TABLE_AUTO_DROP | 1 | 1 |
+| IDENTITY_CACHE | 1 | 1 |
+| INTERLEAVED_EXECUTION_TVF | 1 | 1 |
+| ISOLATE_SECURITY_POLICY_CARDINALITY | 0 | 1 |
+| LAST_QUERY_PLAN_STATS | 0 | 1 |
+| LEGACY_CARDINALITY_ESTIMATION | 0 | 1 |
+| LIGHTWEIGHT_QUERY_PROFILING | 1 | 1 |
+| MAXDOP | 4 | 0 |
+| OPTIMIZE_FOR_AD_HOC_WORKLOADS | 1 | 0 |
+| PARAMETER_SNIFFING | 1 | 1 |
+| QUERY_OPTIMIZER_HOTFIXES | 0 | 1 |
+| ROW_MODE_MEMORY_GRANT_FEEDBACK | 1 | 1 |
+| TSQL_SCALAR_UDF_INLINING | 1 | 1 |
+| VERBOSE_TRUNCATION_WARNINGS | 1 | 1 |
+| XTP_PROCEDURE_EXECUTION_STATISTICS | 0 | 1 |
+| XTP_QUERY_EXECUTION_STATISTICS | 0 | 1 |
+
+[↑ Up ↑](#microsoft-sql-server)
+
 System version
 --------------
 
@@ -802,9 +838,11 @@ EXEC x_SystemVersion
 | Name | Value |
 | ---- | ----- |
 | Version | 15.0.2000.5 |
-| Product | Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)   Sep 24 2019 13:48:23   Copyright (C) 2019 Microsoft Corporation  Developer Edition (64-bit) on Windows 10 Pro 10.0 <X64> (Build 18362: ) (Hypervisor)
+| Family | SQL Server 2019 |
+| Update | RTM |
 | Edition | Developer Edition (64-bit) |
 | Level | RTM |
+| Product | Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)   Sep 24 2019 13:48:23   Copyright (C) 2019 Microsoft Corporation  Developer Edition (64-bit) on Windows 10 Pro 10.0 <X64> (Build 18362: ) (Hypervisor)
 
 [↑ Up ↑](#microsoft-sql-server)
 
@@ -1563,8 +1601,37 @@ ORDER BY _.[Row] DESC
 
 [↑ Up ↑](#microsoft-sql-server)
 
-Wait types
-----------
+Version list
+------------
+
+[↑ Up ↑](#microsoft-sql-server)
+
+[Installation script for v_VersionList →](../../sql/SQLServer/v_VersionList.sql)
+
+This function will return table with SQL Server software version information.
+
+```sql
+SELECT v.[Version] , v.[Family] , v.[Update]
+FROM dbo.v_VersionList() v 
+WHERE v.[Version] LIKE '15.0.41%'
+```
+
+| Version | Family | Update |
+| - | - | - |
+| 15.0.4178.1 | SQL Server 2019 | CU13 |
+| 15.0.4153.1 | SQL Server 2019 | CU12 |
+| 15.0.4138.2 | SQL Server 2019 | CU11 |
+| 15.0.4123.1 | SQL Server 2019 | CU10 |
+| 15.0.4102.2 | SQL Server 2019 | CU9 |
+
+### Source ###
+
+https://buildnumbers.wordpress.com/sqlserver/
+
+[↑ Up ↑](#microsoft-sql-server)
+
+Wait type
+---------
 
 [↑ Up ↑](#microsoft-sql-server)
 

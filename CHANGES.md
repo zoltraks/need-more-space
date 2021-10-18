@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+2021-10-18
+----------
+
+Added new **SqlServer** function **v_VersionList** and procedure **x_SystemConfiguration**.
+
 2021-10-15
 ----------
 
