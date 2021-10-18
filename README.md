@@ -64,6 +64,7 @@ Designed to be used by administrators and developers for doing maintenance or ot
 | -------- | ----------- |
 | [v_ColumnType](docs/source/sqlserver.md#column-type) | Script definition for data type. |
 | [v_SplitText](docs/source/sqlserver.md#split-text) | Split text to table. |
+| [v_VersionList](docs/source/sqlserver.md#version-list) | Return table of version update information. |
 | [v_WaitType](docs/source/sqlserver.md#wait-types) | Return table of wait type descriptions. |
 
 </div>
