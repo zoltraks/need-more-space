@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+2021-10-26
+----------
+
+Improved **SqlServer** procedure **x_ScheduleJob**.
+
 2021-10-18
 ----------
 

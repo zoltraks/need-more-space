@@ -1305,7 +1305,7 @@ EXEC x_ScheduleJob @Help=1 ;
 | --------- | ---- | ----------- |
 | @Help | BIT | Show this help. |
 | @Pretend | BIT | Print queries to be executed but don't do anything. |
-| @Name | NVARCHAR(128) | Database name |
+| @Database | NVARCHAR(128) | Database name |
 | @Name | NVARCHAR(128) | Desired job name. It will be used for step name too. |
 | @Command | NVARCHAR(MAX) | Command text for job step. |
 | @Database | NVARCHAR(128) | Database job will be run on. Current database will be used if not specified. |
@@ -1320,6 +1320,9 @@ EXEC x_ScheduleJob @Help=1 ;
 | @EndDate | INT | End date written in YYMMDD format. |
 | @StartTime | INT | Start time written in HHMMSS 24 hour format. |
 | @EndTime | INT | End time written in HHMMSS 24 hour format. |
+| @OutputFile | NVARCHAR(200) | Output file for job. |
+| @Overwrite | BIT | Overwrite output instead of append. |
+| @Subsystem | NVARCHAR(40) | Subsystem used by the SQL Server Agent service to execute command. Default is 'TSQL'. |
 
 Let's add job called ``BlitzFirst`` running every 15 minutes everyday.
 It will call procedure ``sp_BlitzFirst`` with options directly in specified ``[DBAtools]`` database.
@@ -1437,6 +1440,40 @@ EXEC msdb.dbo.sp_add_jobserver @job_name = N'Nächste Żółw' ;
 For more informations about possible values of ``@Interval`` or ``@Every`` parameter values read official documentation about **sp_add_schedule** function.
 
 https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-add-schedule-transact-sql
+
+Another example is to create job that will be used to execute **SSIS** package.
+
+```sql
+EXEC x_ScheduleJob @Pretend = 1
+  , @Name = 'Test Job'
+  , @OutputFile = 'C:\LOG\SSIS\Log.txt'
+  , @Subsystem = 'SSIS'
+  , @Owner = 'sa'
+  , @Command = N'/ISSERVER "\"\SSISDB\TEST\Project\Package.dtsx\"" /SERVER . /Par "\"$ServerOption::LOGGING_LEVEL(Int16)\"";1 /Par "\"$ServerOption::SYNCHRONIZED(Boolean)\"";True /CALLERINFO SQLAGENT /REPORTING E'
+```
+
+In this case resulting script might look like this.
+
+```sql
+IF EXISTS ( SELECT 1 FROM msdb.dbo.sysjobs WHERE [name] = N'Test Job' )
+EXEC sp_executesql N'EXEC msdb.dbo.sp_delete_job @job_name = N''Test Job'' , @delete_unused_schedule = 0' ;
+
+EXEC msdb.dbo.sp_add_job @job_name = N'Test Job' , @owner_login_name = N'sa' ;
+
+EXEC msdb.dbo.sp_add_jobstep
+  @job_name = N'Test Job' ,
+  @step_name = N'Test Job' ,
+  @database_name = N'DBAtools' ,
+  @subsystem = N'SSIS' ,
+  @output_file_name = N'C:\LOG\SSIS\Log.txt' ,
+  @flags = 2 ,
+  @command = N'/ISSERVER "\"\SSISDB\TEST\Project\Package.dtsx\"" /SERVER . /Par "\"$ServerOption::LOGGING_LEVEL(Int16)\"";1 /Par "\"$ServerOption::SYNCHRONIZED(Boolean)\"";True /CALLERINFO SQLAGENT /REPORTING E' ;
+
+IF EXISTS ( SELECT 1 FROM msdb.dbo.sysschedules WHERE [name] = N'Test Job' )
+EXEC sp_executesql N'EXEC msdb.dbo.sp_delete_schedule @schedule_name = N''Test Job'' , @force_delete = 1'  ;
+
+EXEC msdb.dbo.sp_add_jobserver @job_name = N'Test Job' ;
+```
 
 [↑ Up ↑](#microsoft-sql-server)
 
