@@ -101,3 +101,56 @@ Resulting value will be 258 characters length and that seems to be maximum resul
 When considering maximum length of full object name containing server name, database name, schema name and table name, it will be then 258 * 4 + 3 (for dots) = 1035 characters or 258 * 3 + 2 (for dots) = 776 characters.
 
 [↑ Up ↑](#tips)
+
+Eject database
+--------------
+
+[↑ Up ↑](#tips)
+
+In case you can't just drop database but still want to "eject" database by removing all of its objects, you may use this following script to create a list of **DROP** operations.
+
+```sql
+DECLARE @DROP TABLE
+(
+  [_] INT IDENTITY(1,1) ,
+  [SQL] NVARCHAR(2000) ,
+  INDEX CU UNIQUE CLUSTERED ( [_] ) 
+) ;
+
+INSERT INTO @DROP ( [SQL] )
+SELECT 'DROP SYNONYM ' + QUOTENAME([name]) FROM sys.synonyms ;
+
+INSERT INTO @DROP ( [SQL] )
+SELECT 'DROP VIEW ' + QUOTENAME(SCHEMA_NAME([schema_id])) + '.' + QUOTENAME([name])
+FROM sys.objects
+WHERE [type] in ('V') ;
+
+INSERT INTO @DROP ( [SQL] )
+SELECT 'ALTER TABLE ' + QUOTENAME(SCHEMA_NAME([schema_id])) + '.' + QUOTENAME(OBJECT_NAME([parent_object_id])) + ' DROP CONSTRAINT ' + QUOTENAME([name])
+FROM sys.objects
+WHERE [type] in ('F') ;
+
+INSERT INTO @DROP ( [SQL] )
+SELECT 'DROP TABLE ' + QUOTENAME(SCHEMA_NAME([schema_id])) + '.' + QUOTENAME([name])
+FROM sys.objects
+WHERE [type] in ('U') ;
+
+INSERT INTO @DROP ( [SQL] )
+SELECT 'DROP FUNCTION ' + QUOTENAME(SCHEMA_NAME([schema_id])) + '.' + QUOTENAME([name])
+FROM sys.objects
+WHERE [type] in ('FN' , 'IF' , 'FN' , 'AF' , 'FS' , 'FT' , 'TF') ;
+
+INSERT INTO @DROP ( [SQL] )
+SELECT 'DROP PROCEDURE ' + QUOTENAME(SCHEMA_NAME([schema_id])) + '.' + QUOTENAME([name])
+FROM sys.objects
+WHERE [type] in ('P') ;
+
+INSERT INTO @DROP ( [SQL] )
+SELECT 'DROP SCHEMA ' + QUOTENAME(s.[name])
+FROM sys.schemas s INNER JOIN sys.sysusers u ON u.[uid] = s.[principal_id]
+WHERE u.[issqluser] = 1 AND u.[name] NOT IN ('dbo' , 'sys' , 'guest' , 'INFORMATION_SCHEMA') ;
+
+SELECT [SQL] FROM @DROP ;
+```
+
+[↑ Up ↑](#tips)
