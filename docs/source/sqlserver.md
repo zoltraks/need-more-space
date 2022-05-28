@@ -77,6 +77,12 @@ LOG ON
 , SIZE = 1024KB , FILEGROWTH = 10240KB )
 ```
 
+### Collation ###
+
+```
+ALTER DATABASE [DBAtools] COLLATE SQL_Latin1_General_CP1_CI_AS
+```
+
 ### User ###
 
 ```sql
@@ -91,6 +97,12 @@ To change password for existing user use this example.
 
 ```sql
 ALTER LOGIN [monitor] WITH PASSWORD=N'Secret@321'
+```
+
+To change security options on database user current database must be changed to ``master``. 
+
+```
+USE [master]
 ```
 
 Enable **Activity Monitor** in **SQL Server Management Studio**.
@@ -154,6 +166,7 @@ USE [DBAtools]
 
 ```sql
 GRANT SELECT ON dbo.v_SplitText TO [monitor]
+GRANT SELECT ON dbo.v_VersionList TO [monitor]
 GRANT SELECT ON dbo.v_WaitType TO [monitor]
 ```
 
@@ -170,6 +183,7 @@ GRANT EXECUTE ON dbo.x_OperationStatus TO [monitor]
 GRANT EXECUTE ON dbo.x_ScheduleJob TO [monitor]
 GRANT EXECUTE ON dbo.x_SessionStatus TO [monitor]
 GRANT EXECUTE ON dbo.x_ShowIndex TO [monitor]
+GRANT EXECUTE ON dbo.x_SystemConfiguration TO [monitor]
 GRANT EXECUTE ON dbo.x_SystemMemory TO [monitor]
 GRANT EXECUTE ON dbo.x_SystemVersion TO [monitor]
 ```
